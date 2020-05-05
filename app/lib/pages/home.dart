@@ -20,8 +20,9 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Map data = ModalRoute.of(context).settings.arguments;
-    var jsonData = data['jsonData'];    
+    //Map data = ModalRoute.of(context).settings.arguments;
+    //var jsonData = data['jsonData'];   
+    Map jsonData = ModalRoute.of(context).settings.arguments;
     
     for (var i = 0; i < jsonData['table']['rows'].length; i += 1) {
       //print(jsonData['table']['rows'][i][5]);
@@ -74,27 +75,23 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   void _setDate() {
+
     var now=new DateTime.now();
     now=now.subtract(new Duration(days: 1));
     DatePicker.showDatePicker(context,
                               showTitleActions: true,
                               minTime: DateTime(2000, 1, 1),
                               maxTime: now, onChanged: (date) {
-                            print('change $date');
+                            //print('change $date');
                           }, onConfirm: (date) {
                             print('confirm $date');
-                            //Navigator.pushNamed(context, '/update', arguments:date);
-                          }, currentTime: DateTime.now(), locale: LocaleType.fr);
-    //do something
-    //Navigator.pushNamed(context, '/setdate');
+                            Navigator.pushNamed(context, '/update', arguments:date);
+                          }, currentTime: DateTime.now(), locale: LocaleType.fr);  
   }
 
   void _wmopage(wmodata) {
-    //passing argument to wmo context
-    //Navigator.pushReplacementNamed(context, '/wmo', arguments: {      
-    //   'wmodata': wmodata,
-    // });
-    Navigator.pushNamed(context, '/wmo', arguments:wmodata);
+    //passing argument to wmo context    
+    Navigator.pushNamed(context, '/wmo', arguments:wmodata);   
   }
 
 }

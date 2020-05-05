@@ -25,9 +25,10 @@ class _LoadingState extends State<Loading> {
     }   
 
     //sending argument to /home context
-    Navigator.pushReplacementNamed(context, '/home', arguments: {      
-       'jsonData': jsonData,
-     });
+    //Navigator.pushReplacementNamed(context, '/home', arguments: {      
+     //  'jsonData': jsonData,
+     //});
+    Navigator.pushNamed(context, '/home', arguments:jsonData); 
   }
 
   Future<String> makeRequest() async {
@@ -39,23 +40,14 @@ class _LoadingState extends State<Loading> {
     var smonth='';
     var syear='';
 
-    var day = targetdate.day - 1;
+    var day = targetdate.day;
 
-
-    if(day<10) {
-      sday = '0'+day.toString(); 
-    }
-    else{
-      sday = day.toString(); 
-    }
+    if(day<10) {sday = '0'+day.toString();}
+    else{sday = day.toString();}
 
     var month = targetdate.month;
-    if(month<10) {
-      smonth = '0'+month.toString(); 
-    }
-    else{
-      smonth = month.toString(); 
-    }
+    if(month<10) {smonth = '0'+month.toString();}
+    else{smonth = month.toString();}
     
     syear = (targetdate.year).toString();
     

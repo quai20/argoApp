@@ -24,35 +24,28 @@ class _UpdateState extends State<Update> {
     }   
 
     //sending argument to /home context
-    Navigator.pushReplacementNamed(context, '/home', arguments: {      
-       'jsonData': jsonData,
-     });
+    //Navigator.pushReplacementNamed(context, '/home', arguments: {      
+    //   'jsonData': jsonData,
+    // });
+     Navigator.pushNamed(context, '/home', arguments:jsonData);
   }
 
   Future<String> makeRequest() async {
 
     DateTime targetdate = ModalRoute.of(context).settings.arguments;
+    print(targetdate);
 
     var sday='';
     var smonth='';
     var syear='';
 
-    var day = targetdate.day - 1;
-    if(day<10) {
-      sday = '0'+day.toString(); 
-    }
-    else{
-      sday = day.toString(); 
-    }
+    var day = targetdate.day;
+    if(day<10) {sday = '0'+day.toString();}
+    else{sday = day.toString();}
 
     var month = targetdate.month;
-    if(month<10) {
-      smonth = '0'+month.toString(); 
-    }
-    else{
-      smonth = month.toString(); 
-    }
-    
+    if(month<10) {smonth = '0'+month.toString();}
+    else{smonth = month.toString();}
     syear = (targetdate.year).toString();
     
     var urll =

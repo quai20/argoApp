@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'dart:convert';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class MapWidget extends StatefulWidget {
   @override
@@ -74,6 +74,17 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   void _setDate() {
+    var now=new DateTime.now();
+    now=now.subtract(new Duration(days: 1));
+    DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              minTime: DateTime(2000, 1, 1),
+                              maxTime: now, onChanged: (date) {
+                            print('change $date');
+                          }, onConfirm: (date) {
+                            print('confirm $date');
+                            //Navigator.pushNamed(context, '/update', arguments:date);
+                          }, currentTime: DateTime.now(), locale: LocaleType.fr);
     //do something
     //Navigator.pushNamed(context, '/setdate');
   }

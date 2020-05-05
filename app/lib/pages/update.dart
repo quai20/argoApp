@@ -4,16 +4,15 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-class Loading extends StatefulWidget {
+class Update extends StatefulWidget {
   @override
-  _LoadingState createState() => _LoadingState();
+  _UpdateState createState() => _UpdateState();
 }
 
-class _LoadingState extends State<Loading> {
+class _UpdateState extends State<Update> {
 
   //Loading Json data
-  Future<String> getJson() async {
-    //var _markers = <Marker>[];
+  Future<String> getJson() async {    
       var stringJson;
       var jsonData;
     try {
@@ -32,16 +31,13 @@ class _LoadingState extends State<Loading> {
 
   Future<String> makeRequest() async {
 
-    var targetdate = new DateTime.now();
-    targetdate=targetdate.subtract(new Duration(days: 1));
+    DateTime targetdate = ModalRoute.of(context).settings.arguments;
 
     var sday='';
     var smonth='';
     var syear='';
 
     var day = targetdate.day - 1;
-
-
     if(day<10) {
       sday = '0'+day.toString(); 
     }

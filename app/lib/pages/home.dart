@@ -85,7 +85,7 @@ class _MapWidgetState extends State<MapWidget> {
                             //print('change $date');
                           }, onConfirm: (date) {
                             print('confirm $date');
-                            Navigator.pushNamed(context, '/update', arguments:date);
+                            //Navigator.pushNamed(context, '/update', arguments:date);
                           }, currentTime: DateTime.now(), locale: LocaleType.fr);  
   }
 

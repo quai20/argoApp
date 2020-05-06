@@ -12,11 +12,11 @@ class Update extends StatefulWidget {
 class _UpdateState extends State<Update> {
 
   //Loading Json data
-  Future<String> getJson() async {    
+  Future<String> ugetJson() async {    
       var stringJson;
       var jsonData;
     try {
-      stringJson = await makeRequest();
+      stringJson = await umakeRequest();
       jsonData = json.decode(stringJson);     
       
     } on Exception catch (ex) {
@@ -30,7 +30,7 @@ class _UpdateState extends State<Update> {
      Navigator.pushNamed(context, '/home', arguments:jsonData);
   }
 
-  Future<String> makeRequest() async {
+  Future<String> umakeRequest() async {
 
     DateTime targetdate = ModalRoute.of(context).settings.arguments;
     print(targetdate);
@@ -57,8 +57,9 @@ class _UpdateState extends State<Update> {
   @override
   void initState() {
     super.initState();
-    getJson();
+    ugetJson();
   }
+  
 
   @override
   Widget build(BuildContext context) {

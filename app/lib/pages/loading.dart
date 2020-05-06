@@ -12,6 +12,7 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   //Loading Json data
+  
   Future<String> getJson() async {
     //var _markers = <Marker>[];
     var stringJson;
@@ -25,8 +26,8 @@ class _LoadingState extends State<Loading> {
       jsonData = json.decode(stringJson);
     }
 
-    //pushing to /home context with data argument    
-    Navigator.pushNamed(context, '/home', arguments: jsonData);
+    //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view   
+     Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);
   }
 
   Future<String> makeRequest() async {

@@ -5,16 +5,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
-class Loading extends StatefulWidget {
+class Update extends StatefulWidget {
 
   final DateTime targetdate;
-  const Loading({this.targetdate});
+  const Update({this.targetdate});
 
   @override
-  _LoadingState createState() => _LoadingState();
+  _UpdateState createState() => _UpdateState();
 }
 
-class _LoadingState extends State<Loading> {
+class _UpdateState extends State<Update> {
   //Loading Json data
   
   getJson(targetdate) async {

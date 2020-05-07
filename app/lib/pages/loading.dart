@@ -31,8 +31,7 @@ class _LoadingState extends State<Loading> {
     }
 
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view   
-    Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);
-    //Navigator.pushNamed(context, '/home', arguments: jsonData);
+    Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);    
 
   }
 

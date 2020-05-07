@@ -32,7 +32,7 @@ class _MapWidgetState extends State<MapWidget> {
             backgroundColor: Colors.transparent,
             body: Container(
                 child: IconButton(
-              icon: Icon(Icons.lens),
+              icon: Icon(Icons.details),
               color: Colors.blue[800],
               iconSize: 15.0,
               onPressed: () {
@@ -94,7 +94,7 @@ class _MapWidgetState extends State<MapWidget> {
             ListTile(
               title: Text('About this app'),
               onTap: () {
-                //Do something
+                Navigator.pushNamed(context, '/about');
               },
             )
           ],

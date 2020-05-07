@@ -94,7 +94,7 @@ class _LoadingState extends State<Loading> {
         ),
         backgroundColor: Colors.blue[800],
         body: Center(
-            child: SpinKitFoldingCube(
+            child: SpinKitFadingCircle(
           color: Colors.white,
           size: 50.0,
         )));

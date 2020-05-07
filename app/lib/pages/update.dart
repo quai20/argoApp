@@ -95,7 +95,7 @@ class _UpdateState extends State<Update> {
         ),
         backgroundColor: Colors.blue[800],
         body: Center(
-            child: SpinKitFoldingCube(
+            child: SpinKitFadingCircle(
           color: Colors.white,
           size: 50.0,
         )));

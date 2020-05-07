@@ -76,8 +76,8 @@ class _MapWidgetState extends State<MapWidget> {
             DrawerHeader(
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("assets/Argo-logo.jpg"),
-                        fit: BoxFit.contain)),
+                        image: AssetImage("assets/icon.png"),
+                        fit: BoxFit.scaleDown)),
                 child: Text("")),
             ListTile(
               title: Text('Search'),

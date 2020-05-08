@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'dart:async';
 
 class Update extends StatefulWidget {
-
   final DateTime targetdate;
   const Update({this.targetdate});
 
@@ -16,7 +15,7 @@ class Update extends StatefulWidget {
 
 class _UpdateState extends State<Update> {
   //Loading Json data
-  
+
   getJson(targetdate) async {
     //var _markers = <Marker>[];
     var stringJson;
@@ -26,18 +25,17 @@ class _UpdateState extends State<Update> {
       jsonData = json.decode(stringJson);
     } on Exception catch (ex) {
       print('Erddap error: $ex');
-      stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
+      stringJson =
+          await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       jsonData = json.decode(stringJson);
     }
 
-    //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view   
+    //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view
     Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);
     //Navigator.pushNamed(context, '/home', arguments: jsonData);
-
   }
 
-  Future<String> makeRequest(targetdate) async {
-    
+  Future<String> makeRequest(targetdate) async {  
     var sday = '';
     var smonth = '';
     var syear = '';
@@ -74,17 +72,28 @@ class _UpdateState extends State<Update> {
             sday +
             'T23%3A59%3A59Z';
     print(urll);
-    var response = await http.get(urll);
-    return response.body;
+
+    var client = http.Client();
+    try {
+      var response = await client.get(urll);
+      return response.body;
+    } on Exception catch (ex) {
+      print('Erddap error: $ex');
+      var stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
+      return stringJson;
+    } finally {
+      client.close();
+    }
+
+   
   }
 
-   @override
-  void initState() {   
-    super.initState();  
-    print(widget.targetdate); 
+  @override
+  void initState() {
+    super.initState();
+    print(widget.targetdate);
     getJson(widget.targetdate);
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,8 @@ import 'package:argo_day/pages/wmo.dart';
 import 'package:argo_day/pages/update.dart';
 import 'package:argo_day/pages/about.dart';
 import 'package:argo_day/pages/argo.dart';
+import 'package:argo_day/pages/search.dart';
+import 'package:argo_day/pages/fleet.dart';
 
 void main() => runApp(MaterialApp(
     theme: ThemeData(
@@ -18,6 +20,8 @@ void main() => runApp(MaterialApp(
       '/wmo': (context) => Wmo(),        
       '/update': (context) => Update(targetdate:ModalRoute.of(context).settings.arguments),      
       '/about': (context) => About(),
-      '/argo': (context) => Argo(),           
+      '/argo': (context) => Argo(),   
+      '/search': (context) => Search(),  
+      '/fleet': (context) => Fleet(),        
     }
 ));

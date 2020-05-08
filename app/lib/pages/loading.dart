@@ -73,8 +73,19 @@ class _LoadingState extends State<Loading> {
             sday +
             'T23%3A59%3A59Z';
     print(urll);
-    var response = await http.get(urll);
-    return response.body;
+    
+    var client = http.Client();
+    try {
+      var response = await client.get(urll);
+      return response.body;
+    } on Exception catch (ex) {
+      print('Erddap error: $ex');
+      var stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
+      return stringJson;
+    } finally {
+      client.close();
+    }
+    
   }
 
    @override

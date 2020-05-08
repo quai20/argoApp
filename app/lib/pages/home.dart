@@ -61,7 +61,8 @@ class _MapWidgetState extends State<MapWidget> {
         layers: [
           new TileLayerOptions(
               //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              urlTemplate: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+              urlTemplate:
+                  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
               subdomains: ['a', 'b', 'c']),
           new MarkerLayerOptions(markers: _markers),
         ],
@@ -74,22 +75,28 @@ class _MapWidgetState extends State<MapWidget> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/icon.png"),
-                        fit: BoxFit.scaleDown)),
-                child: Text("")),
+            Container(
+              height: 50,
+              color: Colors.white,
+              child: Text(' '),
+            ),
+            Container(
+              height: 100,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/icon.png"),
+                      fit: BoxFit.scaleDown)),
+            ),
             ListTile(
               title: Text('Search a float'),
               onTap: () {
-                //Do something
+                Navigator.pushNamed(context, '/search');
               },
             ),
             ListTile(
               title: Text('My fleet'),
               onTap: () {
-                //Do something
+                Navigator.pushNamed(context, '/fleet');
               },
             ),
             ListTile(
@@ -119,8 +126,7 @@ class _MapWidgetState extends State<MapWidget> {
         maxTime: now, onChanged: (date) {
       //print('change $date');
     }, onConfirm: (date) {
-      //_setthisdate(date);    
-      print("Im here");
+      //_setthisdate(date);
       Navigator.pushReplacementNamed(context, '/update', arguments: date);
     }, currentTime: DateTime.now(), locale: LocaleType.fr);
   }

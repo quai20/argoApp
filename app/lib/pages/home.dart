@@ -60,7 +60,8 @@ class _MapWidgetState extends State<MapWidget> {
         ),
         layers: [
           new TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              urlTemplate: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
               subdomains: ['a', 'b', 'c']),
           new MarkerLayerOptions(markers: _markers),
         ],
@@ -80,7 +81,13 @@ class _MapWidgetState extends State<MapWidget> {
                         fit: BoxFit.scaleDown)),
                 child: Text("")),
             ListTile(
-              title: Text('Search'),
+              title: Text('Search a float'),
+              onTap: () {
+                //Do something
+              },
+            ),
+            ListTile(
+              title: Text('My fleet'),
               onTap: () {
                 //Do something
               },
@@ -88,7 +95,7 @@ class _MapWidgetState extends State<MapWidget> {
             ListTile(
               title: Text('About argo'),
               onTap: () {
-                //Do something
+                Navigator.pushNamed(context, '/argo');
               },
             ),
             ListTile(

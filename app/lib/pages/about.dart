@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
@@ -13,6 +12,18 @@ class About extends StatelessWidget {
             child: ListView(
           padding: const EdgeInsets.all(8),
           children: <Widget>[
+            Container(
+                height: 100,               
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/icon.png"),
+                        fit: BoxFit.scaleDown)),
+              ),
+              Container(
+              height: 30,
+              color: Colors.white,
+              child: Text(' '),
+            ),
             Container(
               height: 30,
               color: Colors.white,

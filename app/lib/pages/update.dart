@@ -93,10 +93,10 @@ class _UpdateState extends State<Update> {
         appBar: new AppBar(
           title: new Text('Argo floats profiles'),
         ),
-        backgroundColor: Colors.blue[800],
+        backgroundColor: Colors.white,
         body: Center(
             child: SpinKitFadingCircle(
-          color: Colors.white,
+          color: Colors.blue[800],
           size: 50.0,
         )));
   }

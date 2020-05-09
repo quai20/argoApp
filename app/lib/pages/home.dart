@@ -48,7 +48,7 @@ class _MapWidgetState extends State<MapWidget> {
 
     return new Scaffold(
       appBar:
-          new AppBar(title: new Text('Argo floats profiles'), actions: <Widget>[
+          new AppBar(title: new Text('Argo network'), actions: <Widget>[
         // Add 3 lines from here...
         IconButton(icon: Icon(Icons.calendar_today), onPressed: _setDate),
       ]),
@@ -120,14 +120,16 @@ class _MapWidgetState extends State<MapWidget> {
   void _setDate() {
     var now = new DateTime.now();
     now = now.subtract(new Duration(days: 1));
+    var from=DateTime.now().subtract(new Duration(days: 10));
     DatePicker.showDatePicker(context,
         showTitleActions: true,
-        minTime: DateTime(2000, 1, 1),
+        minTime: from,
         maxTime: now, onChanged: (date) {
       //print('change $date');
     }, onConfirm: (date) {
       //_setthisdate(date);
-      Navigator.pushReplacementNamed(context, '/update', arguments: date);
+      //Navigator.pushReplacementNamed(context, '/update', arguments: date);
+      Navigator.of(context).pushNamedAndRemoveUntil('/update', (Route<dynamic> route) => false, arguments: date);
     }, currentTime: DateTime.now(), locale: LocaleType.fr);
   }
 

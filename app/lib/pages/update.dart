@@ -31,8 +31,8 @@ class _UpdateState extends State<Update> {
     }
 
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view
-    Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);
-    //Navigator.pushNamed(context, '/home', arguments: jsonData);
+    //Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);
+    Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false, arguments: jsonData);
   }
 
   Future<String> makeRequest(targetdate) async {  
@@ -57,20 +57,23 @@ class _UpdateState extends State<Update> {
 
     syear = (targetdate.year).toString();
 
-    var urll =
-        'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Cpi_name%2Ccycle_number%2Cplatform_type%2Ctime%2Clatitude%2Clongitude&time%3E=' +
-            syear +
-            '-' +
-            smonth +
-            '-' +
-            sday +
-            'T00%3A00%3A00Z&time%3C=' +
-            syear +
-            '-' +
-            smonth +
-            '-' +
-            sday +
-            'T23%3A59%3A59Z';
+    // var urll =
+    //     'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Cpi_name%2Ccycle_number%2Cplatform_type%2Ctime%2Clatitude%2Clongitude&time%3E=' +
+    //         syear +
+    //         '-' +
+    //         smonth +
+    //         '-' +
+    //         sday +
+    //         'T00%3A00%3A00Z&time%3C=' +
+    //         syear +
+    //         '-' +
+    //         smonth +
+    //         '-' +
+    //         sday +
+    //         'T23%3A59%3A59Z';
+    
+    //THIS IS MUCH FASTER WITH A JSON STORE SOMEWHERE ELSE, THIS COULD BE THE TRICK, LET'S SAY GENERATE JSON FOR 10 past DAYS ON SERVERSIDE... 
+    var urll='http://collab.umr-lops.fr/app/divaa/data/json/'+syear+'-'+smonth+'-'+sday+'.json';
     print(urll);
 
     var client = http.Client();

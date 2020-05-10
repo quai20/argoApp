@@ -24,20 +24,28 @@ class _FleetState extends State<StatefulWidget> {
   }
 
   Widget _buildList(List<String> wmolist) {    
-
     return new ListView.builder(
         itemCount: wmolist.length,
         itemBuilder: (BuildContext ctxt, int index) {          
           return new ListTile(
               title: Text(wmolist[index],
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              trailing: IconButton(
+              trailing: Wrap(
+              spacing: 12,
+              children: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.remove_red_eye, color: Colors.black),
+                  onPressed: () {
+                    //Call search page for wmolist[index]
+                  }),  
+              IconButton(
                   icon: Icon(Icons.remove_circle_outline, color: Colors.black),
                   onPressed: () async {
                     wmolist.remove(wmolist[index]);
                     await SharedPreferencesHelper.setwmofleet(wmolist);
                     setState(() {});
-                  }));
+                  })])
+                  );
         });
   }
 }

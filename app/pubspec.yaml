@@ -27,6 +27,7 @@ dependencies:
   url_launcher: ^5.1.6
   flutter_launcher_icons: "^0.7.3"
   path_provider: any
+  cached_network_image : any
 
 dev_dependencies:
   flutter_test:

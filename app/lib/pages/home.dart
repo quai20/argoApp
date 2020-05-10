@@ -32,7 +32,7 @@ class _MapWidgetState extends State<MapWidget> {
             backgroundColor: Colors.transparent,
             body: Container(
                 child: IconButton(
-              icon: Icon(Icons.details),
+              icon: Icon(Icons.trip_origin),
               color: Colors.blue[800],
               iconSize: 15.0,
               onPressed: () {

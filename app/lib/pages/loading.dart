@@ -74,6 +74,8 @@ class _LoadingState extends State<Loading> {
     //         '-' +
     //         sday +
     //         'T23%3A59%3A59Z';
+
+    // Erddap request send time out too often, going server side...
     var urll='http://collab.umr-lops.fr/app/divaa/data/json/'+syear+'-'+smonth+'-'+sday+'.json';
     print(urll);
     
@@ -83,6 +85,7 @@ class _LoadingState extends State<Loading> {
       return response.body;
     } on Exception catch (ex) {
       print('Erddap error: $ex');
+      //load test dataset if request fails
       var stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       return stringJson;
     } finally {

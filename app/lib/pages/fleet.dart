@@ -31,7 +31,7 @@ class _FleetState extends State<StatefulWidget> {
               title: Text(wmolist[index],
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               trailing: Wrap(
-              spacing: 12,
+              spacing: 10,
               children: <Widget>[
               IconButton(
                   icon: Icon(Icons.remove_red_eye, color: Colors.black),

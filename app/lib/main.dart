@@ -7,6 +7,7 @@ import 'package:argo_day/pages/about.dart';
 import 'package:argo_day/pages/argo.dart';
 import 'package:argo_day/pages/search.dart';
 import 'package:argo_day/pages/fleet.dart';
+import 'package:argo_day/pages/search_result.dart';
 
 void main() => runApp(MaterialApp(
     theme: ThemeData(
@@ -22,6 +23,7 @@ void main() => runApp(MaterialApp(
       '/about': (context) => About(),
       '/argo': (context) => Argo(),   
       '/search': (context) => Search(),  
-      '/fleet': (context) => Fleet(),        
+      '/fleet': (context) => Fleet(),    
+      '/search_result': (context) => SearchResult()    
     }
 ));

@@ -37,6 +37,7 @@ class _FleetState extends State<StatefulWidget> {
                   icon: Icon(Icons.remove_red_eye, color: Colors.black),
                   onPressed: () {
                     //Call search page for wmolist[index]
+                    Navigator.pushNamed(context, '/search_result', arguments: wmolist[index]);
                   }),  
               IconButton(
                   icon: Icon(Icons.remove_circle_outline, color: Colors.black),

@@ -73,6 +73,7 @@ class _SearchState extends State<Search> {
           onTap: () {
             //print(filteredwmos[index]);
             //Call search page for filteredwmos[index]
+            Navigator.pushNamed(context, '/search_result', arguments: filteredwmos[index]);
           }
         );
       },

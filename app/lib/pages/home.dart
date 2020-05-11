@@ -55,8 +55,8 @@ class _MapWidgetState extends State<MapWidget> {
       backgroundColor: Colors.blue[800],
       body: new FlutterMap(
         options: new MapOptions(
-          center: new LatLng(35.0, 5.0),
-          zoom: 5.0,
+          center: new LatLng(40.0, -8.0),
+          zoom: 4.0,
         ),
         layers: [
           new TileLayerOptions(

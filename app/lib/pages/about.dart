@@ -52,7 +52,7 @@ class About extends StatelessWidget {
               height: 30,
               color: Colors.white,
               child: Text(
-                  'For other kind of requests, please contact :'),
+                  'For other requests, please contact :'),
             ),
             Container(
               height: 30,

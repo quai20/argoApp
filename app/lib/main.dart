@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:argo_day/pages/home.dart';
-import 'package:argo_day/pages/loading.dart';
-import 'package:argo_day/pages/wmo.dart';
-import 'package:argo_day/pages/update.dart';
-import 'package:argo_day/pages/about.dart';
-import 'package:argo_day/pages/argo.dart';
-import 'package:argo_day/pages/search.dart';
-import 'package:argo_day/pages/fleet.dart';
-import 'package:argo_day/pages/search_result.dart';
+import 'package:Argo/pages/home.dart';
+import 'package:Argo/pages/loading.dart';
+import 'package:Argo/pages/wmo.dart';
+import 'package:Argo/pages/update.dart';
+import 'package:Argo/pages/about.dart';
+import 'package:Argo/pages/argo.dart';
+import 'package:Argo/pages/search.dart';
+import 'package:Argo/pages/fleet.dart';
+import 'package:Argo/pages/search_result.dart';
 
 void main() => runApp(MaterialApp(
     theme: ThemeData(

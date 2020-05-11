@@ -56,7 +56,7 @@ class _SearchState extends State<Search> {
   }
 
   Widget _buildList() {
-    if (!(_searchText.isEmpty)) {
+    if (_searchText.isNotEmpty) {
       List tempList = new List();
       for (int i = 0; i < filteredwmos.length; i++) {
         if (filteredwmos[i].toLowerCase().contains(_searchText.toLowerCase())) {

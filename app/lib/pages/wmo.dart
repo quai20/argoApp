@@ -41,7 +41,7 @@ class _WmoState extends State<StatefulWidget> {
               height: 40,
               color: Colors.amber[200],
               child:
-                  Center(child: Text('Cycle numer : ' + wmodata[2].toString())),
+                  Center(child: Text('Cycle number : ' + wmodata[2].toString())),
             ),
             Container(
               height: 40,

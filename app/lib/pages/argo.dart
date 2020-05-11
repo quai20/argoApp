@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Argo extends StatelessWidget {
   @override
@@ -7,56 +8,46 @@ class Argo extends StatelessWidget {
         appBar: AppBar(
           title: Text("About Argo"),
         ),
-        body: new Container(
-            child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-              Container(
-              height: 20,
-              color: Colors.white,
-              child: Text(' '),
-            ),    
-              Container(
+        body: Center(
+            child: ListView(
+          padding: const EdgeInsets.all(8),
+          children: <Widget>[
+            Container(
                 height: 100,               
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("assets/icon.png"),
+                        image: AssetImage("assets/argo-inter.png"),
                         fit: BoxFit.scaleDown)),
               ),
               Container(
-              height: 20,
+              height: 30,
               color: Colors.white,
-              child: Text(''),
+              child: Text(' '),
             ),
-              new Expanded(
-                flex: 1,
-                child: new SingleChildScrollView(
-                  child: new Text(
+            Container(                               
+                color: Colors.white, 
+                child: Text(
                     '''
-Current Status of Argo
-\n
-The broad-scale global array of temperature/salinity profiling floats, known as Argo, has already grown to be a major component of the ocean observing system. Argo is a standard to which other developing ocean observing systems can look to. For example, Argo offers ideas on various topics such as how to collaborate internationally, how to develop a data management system and how to change the way scientists think about collecting data. Deployments began in 2000 and continue today at the rate of about 800 per year.
-\n
-Brief History of Argo
-\n
-The name Argo was chosen to emphasize the strong complementary relationship of the global float array with the Jason satellite altimeter mission. In Greek mythology Jason sailed in a ship called "Argo" to capture the golden fleece. Together the Argo and Jason data sets are assimilated into computer models developed by GODAE OceanView that will allow a test of our ability to forecast ocean climate. For the first time, the physical state of the upper ocean is being systematically measured and the data assimilated in near real-time into computer models.  Argo builds on other upper-ocean ocean observing networks, extending their coverage in space an time, their depth range and accuracy, and enhancing them through the addition of salinity and velocity measurements.  Argo is not confined to major shipping routes which can vary with season as the other upper-ocean observing networks are. Instead, the global array of 3,000 floats will be distributed roughly every 3 degrees (300km). Argo is the sole source of global subsurface datasets used in all ocean data assimilation models and reanalyses.
-\n
-Argo's Objectives
-\n
-It will provide a quantitative description of the changing state of the upper ocean and the patterns of ocean climate variability from months to decades, including heat and freshwater storage and transport. The data will enhance the value of the Jason altimeter through measurement of subsurface temperature, salinity, and velocity, with sufficient coverage and resolution to permit interpretation of altimetric sea surface height variability.
-\n
-Argo data will be used for initializing ocean and coupled ocean-atmosphere forecast models, for data assimilation and for model testing.A primary focus of Argo is to document seasonal to decadal climate variability and to aid our understanding of its predictability. A wide range of applications for high-quality global ocean analyses is anticipated.
-\n
-Argo Design and Data
-\n
-The design of the Argo network is based on experience from the present observing system, on recent knowledge of variability from the TOPEX/Poseidon altimeter, and on the requirements for climate and high-resolution ocean models.  The array of ~4000 floats provides 100,000 temperature/salinity (T/S) profiles and velocity measurements per year distributed over the global oceans at an average 3-degree spacing. Floats will cycle to 2000m depth devery 10 days, with 4-5 year lifetimes for individual instruments. All data collected by Argo floats are publically available in near real-time via the Global Data Assembly Centers (GDACs) in Brest, France and Monterey, California after an automated quality control (QC), and in scientifically quality controlled form, delayed mode data, via the GDACs within one year of collection.                    ''',
+Argo is an international program that uses profiling floats to observe temperature, salinity, currents, and, recently, bio-optical properties in the Earth's oceans; it has been operational since the early 2000s. The real-time data it provides is used in climate and oceanographic research. A special research interest is to quantify the ocean heat content (OHC).
+The distribution of active floats in the Argo array, colour coded by country that owns the float, as of February 2018.The Argo fleet consists of almost 4000 drifting "Argo floats" (as profiling floats used by the Argo program are often called) deployed worldwide. Each float weighs 20–30 kg. In most cases probes drift at a depth of 1000 metres (the so-called parking depth) and, every 10 days, by changing their buoyancy, dive to a depth of 2000 metres and then move to the sea-surface, measuring conductivity and temperature profiles as well as pressure. From these, salinity and density can be calculated. Seawater density is important in determining large-scale motions in the ocean. Average current velocities at 1000 metres are directly measured by the distance and direction a float drifts while parked at that depth, which is determined by GPS or Argos system positions at the surface. The data are transmitted to shore via satellite, and are freely available to everyone, without restrictions.
+The Argo program is named after the Greek mythical ship Argo to emphasize the complementary relationship of Argo with the Jason satellite altimeters. Both the standard Argo floats and the 4 satellites launched so far to monitor changing sea-level all operate on a 10-day duty cycle. 
+                    ''',
+                    textAlign: TextAlign.justify,
                     style: new TextStyle(
                       fontSize: 16.0,
                       color: Colors.black,
                     ),
                   ),
                 ),
-              ),
-            ])));
+              Container(
+              height: 30,
+              color: Colors.white,
+              child: new InkWell(
+                  child: new Text('Learn more on Argo program',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, decoration: TextDecoration.underline)),
+                  onTap: () => launch(
+                      'https://www.umr-lops.fr/SNO-Argo/SNO-Argo-France')),
+            )
+          ],
+        )));
   }
 }

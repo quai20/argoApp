@@ -119,7 +119,13 @@ class _MapWidgetState extends State<MapWidget> {
 
   void _setDate() {
     var now = new DateTime.now();
-    now = now.subtract(new Duration(days: 1));
+    if (now.hour > 6){
+      now = now.subtract(new Duration(days: 1));
+    }
+    else {
+      now = now.subtract(new Duration(days: 2));
+    }
+    
     var from=DateTime.now().subtract(new Duration(days: 10));
     DatePicker.showDatePicker(context,
         showTitleActions: true,

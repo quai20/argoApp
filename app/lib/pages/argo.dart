@@ -43,10 +43,39 @@ The Argo program is named after the Greek mythical ship Argo to emphasize the co
               Container(
               height: 30,
               color: Colors.white,
+              child: Text('Learn more about argo :',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
+            Container(
+              height: 30,
+              color: Colors.white,
               child: new InkWell(
-                  child: new Text('Learn more on Argo program',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, decoration: TextDecoration.underline)),
+                  child: new Text('SNO-Argo-France',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, decoration: TextDecoration.underline)),
                   onTap: () => launch(
                       'https://www.umr-lops.fr/SNO-Argo/SNO-Argo-France')),
+            ),
+            Container(
+              height: 30,
+              color: Colors.white,
+              child: new InkWell(
+                  child: new Text('Argo France',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, decoration: TextDecoration.underline)),
+                  onTap: () => launch(
+                      'http://www.argo-france.fr/')),
+            ),
+            Container(
+              height: 30,
+              color: Colors.white,
+              child: new InkWell(
+                  child: new Text('Argo international',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, decoration: TextDecoration.underline)),
+                  onTap: () => launch(
+                      'http://www.argo.ucsd.edu/')),
+            ),
+            Container(
+              height: 30,
+              color: Colors.white,
+              child: new InkWell(
+                  child: new Text('Argo data management',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, decoration: TextDecoration.underline)),
+                  onTap: () => launch(
+                      'http://www.argodatamgt.org/')),
             )
           ],
         )));

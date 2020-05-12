@@ -70,9 +70,7 @@ class _SearchState extends State<Search> {
       itemBuilder: (BuildContext context, int index) {
         return new ListTile(
           title: Text(filteredwmos[index]),
-          onTap: () {
-            //print(filteredwmos[index]);
-            //Call search page for filteredwmos[index]
+          onTap: () {            
             Navigator.pushNamed(context, '/search_result', arguments: filteredwmos[index]);
           }
         );

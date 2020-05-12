@@ -15,7 +15,7 @@ void main() => runApp(MaterialApp(
       
     ),
     initialRoute: '/',
-    routes: {
+    routes: {      
       '/': (context) => Loading(targetdate:DateTime.now().subtract(new Duration(days: 1))),
       '/home': (context) => MapWidget(),   
       '/wmo': (context) => Wmo(),        

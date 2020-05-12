@@ -85,7 +85,7 @@ class _SearchResultState extends State<StatefulWidget> {
       Container(
         height: 40,
         color: Colors.amber[200],
-        child: Center(child: Text('Cycle numer : ' + wmoinfo[2].toString())),
+        child: Center(child: Text('Cycle number : ' + wmoinfo[2].toString())),
       ),
       Container(
         height: 40,

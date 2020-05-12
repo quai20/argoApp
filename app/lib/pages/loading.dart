@@ -15,28 +15,29 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-  //Loading Json data
   
-  getJson(targetdate) async {
-    //var _markers = <Marker>[];
+  //Loading Json data in async, to do the build in the same time
+  //it doesn't return anything since it pushes data to next route
+  getJson(targetdate) async {    
     var stringJson;
     var jsonData;
     try {
+      //CALLING makeRequest with await to wait for the answer
       stringJson = await makeRequest(targetdate);
       jsonData = json.decode(stringJson);
     } on Exception catch (ex) {
       print('Erddap error: $ex');
+      //IF ERDDAP ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
       stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       jsonData = json.decode(stringJson);
     }
-
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view   
-    //Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);    
-
+    //also removing this page from the app tree, it's useless after loading
     Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false, arguments: jsonData);
 
   }
 
+  //makeRequest has to return Future (and be async) to avoid getting stuck during http call
   Future<String> makeRequest(targetdate) async {
     
     var sday = '';
@@ -60,6 +61,7 @@ class _LoadingState extends State<Loading> {
 
     syear = (targetdate.year).toString();
 
+    //ERDDAP URL
     // var urll =
     //     'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Cpi_name%2Ccycle_number%2Cplatform_type%2Ctime%2Clatitude%2Clongitude&time%3E=' +
     //         syear +
@@ -79,13 +81,14 @@ class _LoadingState extends State<Loading> {
     var urll='http://collab.umr-lops.fr/app/divaa/data/json/'+syear+'-'+smonth+'-'+sday+'.json';
     print(urll);
     
+    //HTTP CALL
     var client = http.Client();
     try {
       var response = await client.get(urll);
       return response.body;
     } on Exception catch (ex) {
       print('Erddap error: $ex');
-      //load test dataset if request fails
+      //load test dataset if request fails, not sure if it's a good idea
       var stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       return stringJson;
     } finally {
@@ -94,6 +97,7 @@ class _LoadingState extends State<Loading> {
     
   }
 
+  //calling getJson in in initState phase so it start to load data as soon as possible
    @override
   void initState() {   
     super.initState();     
@@ -101,7 +105,7 @@ class _LoadingState extends State<Loading> {
     getJson(widget.targetdate);
   }
 
-
+  //build the loading animation that spins during data is loading
   @override
   Widget build(BuildContext context) {
     print("loading build");

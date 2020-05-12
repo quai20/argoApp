@@ -40,7 +40,7 @@ class _SearchState extends State<Search> {
     super.initState();
   }
 
-  //building the app bar  
+  //building the app bar
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildBar(context),
@@ -73,19 +73,38 @@ class _SearchState extends State<Search> {
       //the new filteredwmos are now tempList (list that contains the searched characters)
       filteredwmos = tempList;
     }
-    //The we build the actual list to diplay, with ListView
-    return ListView.builder(
-      itemCount: wmos == null ? 0 : filteredwmos.length,
-      itemBuilder: (BuildContext context, int index) {
-        return new ListTile(
-          title: Text(filteredwmos[index]),
-          onTap: () {            
-            //Let's call wmo page when press on tile
-            Navigator.pushNamed(context, '/search_result', arguments: filteredwmos[index]);
-          }
-        );
-      },
+    //The we build the actual list to diplay, with Gridview
+    return GridView.count(
+      // Create a grid with 3 columns. If you change the scrollDirection to
+      crossAxisCount: 3,
+      // Generate 100 widgets that display their index in the List.
+      children: List.generate(filteredwmos.length, (index) {
+        return Center(
+            child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/search_result',
+                arguments: filteredwmos[index]);
+          },
+          child: Text(
+            filteredwmos[index],
+            style: Theme.of(context).textTheme.headline6,
+          ),
+        ));
+      }),
     );
+
+    // return ListView.builder(
+    //   itemCount: wmos == null ? 0 : filteredwmos.length,
+    //   itemBuilder: (BuildContext context, int index) {
+    //     return new ListTile(
+    //         title: Text(filteredwmos[index]),
+    //         onTap: () {
+    //           //Let's call wmo page when press on tile
+    //           Navigator.pushNamed(context, '/search_result',
+    //               arguments: filteredwmos[index]);
+    //         });
+    //   },
+    // );
   }
 
   //Function that changes the appbar when pressed on button
@@ -116,14 +135,14 @@ class _SearchState extends State<Search> {
   void _getwmos() async {
     final response = await dio
         .get('http://collab.umr-lops.fr/app/divaa/data/json/wmolist.json');
-        //Create a new list from json, so that _filter can work with
+    //Create a new list from json, so that _filter can work with
     List tempList = new List();
     for (int i = 0; i < response.data['wmolist'].length; i++) {
       tempList.add(response.data['wmolist'][i]);
     }
     //The widget has a new state (= a new list to search in)
     setState(() {
-      wmos = tempList;      
+      wmos = tempList;
       filteredwmos = wmos;
     });
   }

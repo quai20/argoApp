@@ -13,9 +13,10 @@ class SearchResult extends StatefulWidget {
 class _SearchResultState extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
-    //Get wmo searched
+    //Get wmo searched from context page
     String wmo = ModalRoute.of(context).settings.arguments;
 
+    //Lets build this page like the wmo page
     return Scaffold(
         appBar: AppBar(title: Text("Float : " + wmo), actions: <Widget>[
           FutureBuilder<List<String>>(
@@ -24,6 +25,7 @@ class _SearchResultState extends State<StatefulWidget> {
               initialData: List<String>(),
               builder:
                   (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                    //Future builder for the favorite icon
                 return snapshot.hasData
                     ? _buildIcon(snapshot.data, wmo)
                     : Container();
@@ -33,8 +35,9 @@ class _SearchResultState extends State<StatefulWidget> {
             child: ListView(
           padding: const EdgeInsets.all(8),
           children: <Widget>[
+            //For the wmo info, here we call erddap, so --> future builder
             FutureBuilder<List>(
-                // get the wmoinfos, via erddap
+                // get the wmoinfos, via an erddap function
                 future: fetchInfos(wmo),
                 initialData: [
                   "...",
@@ -44,6 +47,7 @@ class _SearchResultState extends State<StatefulWidget> {
                   "0000-00-00T00:00:00Z"
                 ],
                 builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                  //here we call the function that will build the body of the page, with wmo info and images
                   return snapshot.hasData
                       ? _buildListview(snapshot.data)
                       : Container();
@@ -52,12 +56,13 @@ class _SearchResultState extends State<StatefulWidget> {
         )));
   }
 
+  //Function that builds favorite icon with wmo and fleet list as input
   Widget _buildIcon(List<String> wmolist, String wmo) {
-    if (wmolist.contains(wmo)) {
-      //return Icon(Icons.favorite, color: Colors.red);
+    if (wmolist.contains(wmo)) {      
       return IconButton(
           icon: Icon(Icons.favorite, color: Colors.red),
           onPressed: () async {
+            //Remove wmo from fleet list (this is async/await since it writes in a xml file)
             wmolist.remove(wmo);
             await SharedPreferencesHelper.setwmofleet(wmolist);
             setState(() {});
@@ -66,6 +71,7 @@ class _SearchResultState extends State<StatefulWidget> {
       return IconButton(
           icon: Icon(Icons.favorite, color: Colors.white),
           onPressed: () async {
+            //Add wmo to fleet list
             wmolist.add(wmo);
             await SharedPreferencesHelper.setwmofleet(wmolist);
             setState(() {});
@@ -73,6 +79,7 @@ class _SearchResultState extends State<StatefulWidget> {
     }
   }
 
+  //Function that builds the body of the page, a List view with text info and pictures
   Widget _buildListview(List wmoinfo) {
     return SizedBox(
       height: 600,
@@ -116,6 +123,7 @@ class _SearchResultState extends State<StatefulWidget> {
     ]));
   }
 
+  //Future function that call erddap and fetch wmo information, wmo is returned in a futur builder
   Future<List> fetchInfos(wmo) async {
     var urll =
         'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Cpi_name%2Ccycle_number%2Cplatform_type%2Ctime&platform_number=%22' +
@@ -140,26 +148,18 @@ class _SearchResultState extends State<StatefulWidget> {
 }
 
 class SharedPreferencesHelper {
-  ///
-  /// Instantiation of the SharedPreferences library
-  ///
+  // Instantiation of the SharedPreferences library
   static final String _kwmofleet = "wmofleet";
 
-  /// ------------------------------------------------------------
-  /// Method that returns the saved wmos, or empty list if none
-  /// ------------------------------------------------------------
+  // Method that returns the saved wmos, or empty list if none  
   static Future<List<String>> getwmofleet() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     return prefs.getStringList(_kwmofleet) ?? List<String>();
   }
 
-  /// ----------------------------------------------------------
-  /// Method that saves the fleet
-  /// ----------------------------------------------------------
+  // Method that saves the fleet  
   static Future<bool> setwmofleet(List<String> value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     return prefs.setStringList(_kwmofleet, value);
   }
 }

@@ -10,26 +10,31 @@ class Wmo extends StatefulWidget {
 class _WmoState extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
-    //Get wmo clicked
+    //Get wmo clicked from page context
     List wmodata = ModalRoute.of(context).settings.arguments;
 
+    //Lets build the page
     return Scaffold(
         appBar: AppBar(
             title: Text("Float : " + wmodata[0].toString()),
             actions: <Widget>[
+              //For the heart icon, we use a future builder because we're gonna load fleet list
+              //from user preferencies and compare our wmo to this list
               FutureBuilder<List<String>>(
-                  // get the wmofleetlist, saved in the preferences
+                  // get the wmofleetlist, saved in the user preferences
                   future: SharedPreferencesHelper.getwmofleet(),
                   initialData: List<String>(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<String>> snapshot) {
+                    //Here we call the build function with our fleet list and clicked wmo in input
                     return snapshot.hasData
                         ? _buildIcon(snapshot.data, wmodata[0].toString())
                         : Container();
                   }),
             ]),
-        body: Center(
-            child: ListView(
+        body: // Then we build the reste of the page with wmo info
+            Center(
+                child: ListView(
           padding: const EdgeInsets.all(8),
           children: <Widget>[
             Container(
@@ -40,8 +45,8 @@ class _WmoState extends State<StatefulWidget> {
             Container(
               height: 40,
               color: Colors.amber[200],
-              child:
-                  Center(child: Text('Cycle number : ' + wmodata[2].toString())),
+              child: Center(
+                  child: Text('Cycle number : ' + wmodata[2].toString())),
             ),
             Container(
               height: 40,
@@ -58,6 +63,7 @@ class _WmoState extends State<StatefulWidget> {
               color: Colors.white,
               child: Center(child: Text('')),
             ),
+            // and we call an erddap image with cachednetworkimage
             Container(
               height: 400,
               child: CachedNetworkImage(
@@ -73,9 +79,9 @@ class _WmoState extends State<StatefulWidget> {
         )));
   }
 
+  //THis is the function that builds the favorite icon with wmo and fleet list iin input
   Widget _buildIcon(List<String> wmolist, String wmo) {
-    if (wmolist.contains(wmo)) {
-      //return Icon(Icons.favorite, color: Colors.red);
+    if (wmolist.contains(wmo)) {      
       return IconButton(
           icon: Icon(Icons.favorite, color: Colors.red),
           onPressed: () async {
@@ -91,31 +97,24 @@ class _WmoState extends State<StatefulWidget> {
             await SharedPreferencesHelper.setwmofleet(wmolist);
             setState(() {});
           });
-    }    
+    }
   }
 }
 
+//User preferencies managing class
 class SharedPreferencesHelper {
-  ///
-  /// Instantiation of the SharedPreferences library
-  ///
+  // Instantiation of the SharedPreferences library
   static final String _kwmofleet = "wmofleet";
 
-  /// ------------------------------------------------------------
-  /// Method that returns the saved wmos, or empty list if none
-  /// ------------------------------------------------------------
+  // Method that returns the saved wmos, or empty list if none
   static Future<List<String>> getwmofleet() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     return prefs.getStringList(_kwmofleet) ?? List<String>();
   }
 
-  /// ----------------------------------------------------------
-  /// Method that saves the fleet
-  /// ----------------------------------------------------------
+  // Method that saves the fleet
   static Future<bool> setwmofleet(List<String> value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     return prefs.setStringList(_kwmofleet, value);
   }
 }

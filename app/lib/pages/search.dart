@@ -25,8 +25,15 @@ class _SearchState extends State<Search> {
           //on 1st click on search, searched text is empty and filtered list is the complete list
           filteredwmos = wmos;
         });
-      } else {
+      } else if (_filter.text.length < _searchText.length) {
         setState(() {
+        print('delete');
+        _searchText = _filter.text;
+        filteredwmos = wmos;
+        });
+      } else {
+        setState(() {   
+          print('add');       
           _searchText = _filter.text;
         });
       }
@@ -72,6 +79,7 @@ class _SearchState extends State<Search> {
       }
       //the new filteredwmos are now tempList (list that contains the searched characters)
       filteredwmos = tempList;
+      //prevfilteredwmos = tempList;
     }
     //The we build the actual list to diplay, with Gridview
     return GridView.count(
@@ -92,19 +100,6 @@ class _SearchState extends State<Search> {
         ));
       }),
     );
-
-    // return ListView.builder(
-    //   itemCount: wmos == null ? 0 : filteredwmos.length,
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return new ListTile(
-    //         title: Text(filteredwmos[index]),
-    //         onTap: () {
-    //           //Let's call wmo page when press on tile
-    //           Navigator.pushNamed(context, '/search_result',
-    //               arguments: filteredwmos[index]);
-    //         });
-    //   },
-    // );
   }
 
   //Function that changes the appbar when pressed on button

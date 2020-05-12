@@ -7,5 +7,14 @@
 
 This is the main code for the android application for Argo network discovery. 
 
-<img src="https://user-images.githubusercontent.com/17851004/81298768-87138c00-9075-11ea-9951-7c862af329cc.png"
-    alt="Preview" height="300"/>
+### Features :
+
+- Explore the active argo network with an interactive map and a calendar.
+- Fetch informations on argo profiles present on the map.
+- Search & fetch informations on a float in the complete argo network (even dead ones).
+- Save a float in your fleet.
+- Explore floats from your saved fleet.
+
+### Contributing
+
+Should one want to propose a change or new feature, please file an issue through the GitHub interface. Bug reports specifically may be made here. When proposing a change/new feature, or reporting a bug, please illustrate the issue with a minimal reproducible example, including texts, codes and resultant outputs.  

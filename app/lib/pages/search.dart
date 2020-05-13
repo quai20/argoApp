@@ -13,6 +13,7 @@ class _SearchState extends State<Search> {
   String _searchText = "";
   List wmos = new List();
   List filteredwmos = new List();
+  List prevfilteredwmos = new List(); 
   Icon _searchIcon = new Icon(Icons.search);
   Widget _appBarTitle = new Text('Search a float');
 
@@ -25,15 +26,15 @@ class _SearchState extends State<Search> {
           //on 1st click on search, searched text is empty and filtered list is the complete list
           filteredwmos = wmos;
         });
+        // If there is a character deletion, we're going back to previous state
       } else if (_filter.text.length < _searchText.length) {
-        setState(() {
-        print('delete');
+        setState(() {        
         _searchText = _filter.text;
-        filteredwmos = wmos;
+        filteredwmos = prevfilteredwmos;
         });
+        // If it's a longer query
       } else {
-        setState(() {   
-          print('add');       
+        setState(() {             
           _searchText = _filter.text;
         });
       }
@@ -70,6 +71,7 @@ class _SearchState extends State<Search> {
   //building the list
   Widget _buildList() {
     if (_searchText.isNotEmpty) {
+      prevfilteredwmos = filteredwmos;
       List tempList = new List();
       for (int i = 0; i < filteredwmos.length; i++) {
         //this is where the strcmp is done (put everything in lowercase even if we have numeric... we never know)

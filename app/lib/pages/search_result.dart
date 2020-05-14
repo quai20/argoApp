@@ -18,7 +18,7 @@ class _SearchResultState extends State<StatefulWidget> {
 
     //Lets build this page like the wmo page
     return Scaffold(
-        appBar: AppBar(title: Text("Float : " + wmo), actions: <Widget>[
+        appBar: AppBar(title: Text("WMO : " + wmo), actions: <Widget>[
           FutureBuilder<List<String>>(
               // get the wmofleetlist, saved in the preferences
               future: SharedPreferencesHelper.getwmofleet(),

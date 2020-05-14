@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:Argo/pages/userpreference.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -13,9 +14,9 @@ class _SearchState extends State<Search> {
   String _searchText = "";
   List wmos = new List();
   List filteredwmos = new List();
-  List prevfilteredwmos = new List(); 
+  List prevfilteredwmos = new List();
   Icon _searchIcon = new Icon(Icons.search);
-  Widget _appBarTitle = new Text('Search a float');
+  Widget _appBarTitle;
 
   //Main State function, that changes the state of the widget everytime searched text changes
   _SearchState() {
@@ -28,13 +29,13 @@ class _SearchState extends State<Search> {
         });
         // If there is a character deletion, we're going back to previous state
       } else if (_filter.text.length < _searchText.length) {
-        setState(() {        
-        _searchText = _filter.text;
-        filteredwmos = prevfilteredwmos;
+        setState(() {
+          _searchText = _filter.text;
+          filteredwmos = prevfilteredwmos;
         });
         // If it's a longer query
       } else {
-        setState(() {             
+        setState(() {
           _searchText = _filter.text;
         });
       }
@@ -45,6 +46,7 @@ class _SearchState extends State<Search> {
   void initState() {
     //Here we fetch wmo list online as soon as possible (in initstate)
     this._getwmos();
+    this._appBarTitle = _setAppBarTitle();
     super.initState();
   }
 
@@ -121,7 +123,7 @@ class _SearchState extends State<Search> {
       } else {
         //or we are already searching and we want to close search mode
         this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = new Text('Search a float');
+        this._appBarTitle = _setAppBarTitle();
         filteredwmos = wmos;
         _filter.clear();
       }
@@ -142,5 +144,28 @@ class _SearchState extends State<Search> {
       wmos = tempList;
       filteredwmos = wmos;
     });
+  }
+
+  _setAppBarTitle() {
+    return FutureBuilder<String>(
+        // get the language, saved in the user preferences
+        future: SharedPreferencesHelper.getlanguage(),
+        initialData: 'english',
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.hasData) {
+            switch (snapshot.data) {
+              case 'english':
+                {
+                  return Text('Search a float');
+                }
+                break;
+              case 'francais':
+                {
+                  return Text('Rechercher un flotteur');
+                }
+                break;
+            }
+          }
+        });
   }
 }

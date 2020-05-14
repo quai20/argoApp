@@ -16,7 +16,7 @@ class _WmoState extends State<StatefulWidget> {
     //Lets build the page
     return Scaffold(
         appBar: AppBar(
-            title: Text("Float : " + wmodata[0].toString()),
+            title: Text("WMO : " + wmodata[0].toString()),
             actions: <Widget>[
               //For the heart icon, we use a future builder because we're gonna load fleet list
               //from user preferencies and compare our wmo to this list

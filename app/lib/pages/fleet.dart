@@ -12,7 +12,7 @@ class _FleetState extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("My fleet"),
+          title: _setAppBarTitle(),
         ),
         //Future builder : the future parametre will be the fleet list, and in the builder we will
         //draw the listview depending of the list (in the builder, the list is snapshot.data)
@@ -55,4 +55,28 @@ class _FleetState extends State<StatefulWidget> {
               ]));
         });
   }
+
+  _setAppBarTitle() {
+    return FutureBuilder<String>(
+        // get the language, saved in the user preferences
+        future: SharedPreferencesHelper.getlanguage(),
+        initialData: 'english',
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.hasData) {
+            switch (snapshot.data) {
+              case 'english':
+                {
+                  return Text('My fleet');
+                }
+                break;
+              case 'francais':
+                {
+                  return Text('Ma flotte');
+                }
+                break;
+            }           
+          }
+        });
+  }
+  
 }

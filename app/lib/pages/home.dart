@@ -49,7 +49,7 @@ class _MapWidgetState extends State<MapWidget> {
 
     //PAGE DISPLAY
     return new Scaffold(
-      appBar: new AppBar(title: _setAppBar(), actions: <Widget>[
+      appBar: new AppBar(title: _setAppBarTitle(), actions: <Widget>[
         //ADD CALENDAR
         IconButton(icon: Icon(Icons.calendar_today), onPressed: _setDate),
       ]),
@@ -81,7 +81,7 @@ class _MapWidgetState extends State<MapWidget> {
     );
   }
 
-  _setAppBar() {
+  _setAppBarTitle() {
     return FutureBuilder<String>(
         // get the language, saved in the user preferences
         future: SharedPreferencesHelper.getlanguage(),
@@ -94,7 +94,7 @@ class _MapWidgetState extends State<MapWidget> {
                   return Text('Argo network');
                 }
                 break;
-              case 'french':
+              case 'francais':
                 {
                   return Text('Le réseau Argo');
                 }
@@ -124,14 +124,14 @@ class _MapWidgetState extends State<MapWidget> {
                   ];
                 }
                 break;
-              case 'french':
+              case 'francais':
                 {
                   labels = [
                     'Rechercher un flotteur',
                     'Ma flotte',
                     'A propos d\'Argo',
-                    'A propos de cette appli',
-                    'Language'
+                    'A propos de cette application',
+                    'Langue'
                   ];
                 }
                 break;

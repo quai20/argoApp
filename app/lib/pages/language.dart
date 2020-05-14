@@ -43,7 +43,7 @@ class _LanguageState extends State<StatefulWidget> {
       }
       break;
       
-      case 'french': {        
+      case 'francais': {        
         icon_fr = Icons.radio_button_checked;
       }
       break;
@@ -63,12 +63,12 @@ class _LanguageState extends State<StatefulWidget> {
                     })
             ),
            ListTile(
-              title: Text('French'),
+              title: Text('Francais'),
               trailing: IconButton(
                     icon: Icon(icon_fr),
                     onPressed: () {   
                       //set language & rebuild                        
-                      SharedPreferencesHelper.setlanguage('french');
+                      SharedPreferencesHelper.setlanguage('francais');
                       setState(() {});
                     })
             ),            

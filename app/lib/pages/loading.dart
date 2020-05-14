@@ -110,9 +110,9 @@ class _LoadingState extends State<Loading> {
   Widget build(BuildContext context) {
     print("loading build");
     return Scaffold(
-        appBar: new AppBar(
-          title: new Text('Argo network'),
-        ),
+        //appBar: new AppBar(
+        //  title: new Text('Argo network'),
+        //),
         backgroundColor: Colors.white,
         body: Center(
             child: SpinKitFadingCircle(

@@ -87,7 +87,6 @@ class _UpdateState extends State<Update> {
     } finally {
       client.close();
     }
-
    
   }
 
@@ -102,9 +101,9 @@ class _UpdateState extends State<Update> {
   Widget build(BuildContext context) {
     print("loading build");
     return Scaffold(
-        appBar: new AppBar(
-          title: new Text('Argo floats profiles'),
-        ),
+        //appBar: new AppBar(
+        //  title: new Text('Argo floats profiles'),
+        //),
         backgroundColor: Colors.white,
         body: Center(
             child: SpinKitFadingCircle(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Argo/pages/userpreference.dart';
 
 class Wmo extends StatefulWidget {
   @override
@@ -98,23 +98,5 @@ class _WmoState extends State<StatefulWidget> {
             setState(() {});
           });
     }
-  }
-}
-
-//User preferencies managing class
-class SharedPreferencesHelper {
-  // Instantiation of the SharedPreferences library
-  static final String _kwmofleet = "wmofleet";
-
-  // Method that returns the saved wmos, or empty list if none
-  static Future<List<String>> getwmofleet() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(_kwmofleet) ?? List<String>();
-  }
-
-  // Method that saves the fleet
-  static Future<bool> setwmofleet(List<String> value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setStringList(_kwmofleet, value);
   }
 }

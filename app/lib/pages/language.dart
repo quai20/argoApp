@@ -53,6 +53,7 @@ class _LanguageState extends State<StatefulWidget> {
           padding: const EdgeInsets.all(8),
           children: <Widget>[
             ListTile(
+              leading: CircleAvatar(backgroundImage: AssetImage("assets/flags/uk.png")),
               title: Text('English'),
               trailing: IconButton(
                     icon: Icon(icon_en),
@@ -63,6 +64,7 @@ class _LanguageState extends State<StatefulWidget> {
                     })
             ),
            ListTile(
+             leading: CircleAvatar(backgroundImage: AssetImage("assets/flags/fr.png")),
               title: Text('Francais'),
               trailing: IconButton(
                     icon: Icon(icon_fr),

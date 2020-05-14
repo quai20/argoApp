@@ -211,7 +211,7 @@ class _MapWidgetState extends State<MapWidget> {
       Navigator.of(context).pushNamedAndRemoveUntil(
           '/update', (Route<dynamic> route) => false,
           arguments: date);
-    }, currentTime: DateTime.now(), locale: LocaleType.fr);
+    }, currentTime: DateTime.now());
   }
 
   //MARKER ONCLICKED HANDLING

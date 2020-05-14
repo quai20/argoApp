@@ -14,6 +14,7 @@ This is the main code for the android application for Argo network discovery.
 - Search & fetch informations on a float in the complete argo network (even dead ones).
 - Save a float in your fleet.
 - Explore floats from your saved fleet.
+- Languages : English, French
 
 ### Contributing
 

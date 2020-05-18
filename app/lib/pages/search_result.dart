@@ -107,6 +107,7 @@ class _SearchResultState extends State<StatefulWidget> {
       }
     }
 
+    //Let's rebuild the last marker in red (change color inside the for loop doesn't seems to work because of the async)
     _markers.add(Marker(                              
           point: new LatLng( wmoinfo[wmoinfo.length-1][5], wmoinfo[wmoinfo.length-1][6]),          
           builder: (ctx) => Container(

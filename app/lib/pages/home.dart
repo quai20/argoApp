@@ -13,11 +13,22 @@ class _MapWidgetState extends State<MapWidget> {
   //INIT MARKER LIST
   var _markers = <Marker>[];
 
+  MapController mapController;
+
+  @override
+  void initState() {
+    super.initState();
+    mapController = MapController();
+  }
+
   //BUILD
   @override
   Widget build(BuildContext context) {
     //GETTING DATA FROM CONTEXT
-    Map jsonData = ModalRoute.of(context).settings.arguments;
+    LoadingScreenArguments args = ModalRoute.of(context).settings.arguments;
+    Map jsonData = args.jsonData;
+    LatLng center = args.center;
+    double zoom = args.zoom;
 
     //TURNING DATA INTO MARKERS
     for (var i = 0; i < jsonData['table']['rows'].length; i += 1) {
@@ -36,7 +47,7 @@ class _MapWidgetState extends State<MapWidget> {
               icon: Icon(Icons.trip_origin),
               color: Colors.blue[800],
               iconSize: 15.0,
-              onPressed: () {                
+              onPressed: () {                    
                 Navigator.pushNamed(context, '/wmo', arguments: jsonData['table']['rows'][i]);
               },
             )),
@@ -55,20 +66,21 @@ class _MapWidgetState extends State<MapWidget> {
       ]),
       backgroundColor: Colors.blue[800],
       //ADD MAP
-      body: new FlutterMap(
-        options: new MapOptions(
-          center: new LatLng(40.0, -8.0),
-          zoom: 4.0,
+      body: FlutterMap(
+        mapController: mapController,
+        options: MapOptions(
+          center: center,
+          zoom: zoom,
           maxZoom: 5.0,
           minZoom: 3.0,
         ),
         layers: [
-          new TileLayerOptions(
+          TileLayerOptions(
               //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
               urlTemplate:
                   "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
               subdomains: ['a', 'b', 'c']),
-          new MarkerLayerOptions(markers: _markers),
+          MarkerLayerOptions(markers: _markers),
         ],
       ),
       //DRAWER FOR THE MENU OF THE APP
@@ -210,8 +222,7 @@ class _MapWidgetState extends State<MapWidget> {
         onChanged: (date) {}, onConfirm: (date) {
       Navigator.of(context).pushNamedAndRemoveUntil(
           '/update', (Route<dynamic> route) => false,
-          arguments: date);
+          arguments: HomeScreenArguments(date,mapController.center,mapController.zoom));
     }, currentTime: DateTime.now());
   }  
 }
-

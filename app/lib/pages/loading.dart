@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:latlong/latlong.dart';
+import 'package:Argo/pages/userpreference.dart';
 
 class Loading extends StatefulWidget {
 
@@ -33,8 +35,9 @@ class _LoadingState extends State<Loading> {
     }
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view   
     //also removing this page from the app tree, it's useless after loading
-    Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false, arguments: jsonData);
-
+    Navigator.of(context).pushNamedAndRemoveUntil('/home', 
+    (Route<dynamic> route) => false, 
+    arguments: LoadingScreenArguments(jsonData,LatLng(40.0, -8.0),4.0));
   }
 
   //makeRequest has to return Future (and be async) to avoid getting stuck during http call

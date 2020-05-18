@@ -4,10 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import 'package:Argo/pages/userpreference.dart';
 
 class Update extends StatefulWidget {
-  final DateTime targetdate;
-  const Update({this.targetdate});
+  final thisarg;
+  const Update({this.thisarg});
 
   @override
   _UpdateState createState() => _UpdateState();
@@ -32,7 +33,9 @@ class _UpdateState extends State<Update> {
 
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view
     //Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);
-    Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false, arguments: jsonData);
+    Navigator.of(context).pushNamedAndRemoveUntil('/home', 
+    (Route<dynamic> route) => false, 
+    arguments: LoadingScreenArguments(jsonData,widget.thisarg.center,widget.thisarg.zoom));
   }
 
   Future<String> makeRequest(targetdate) async {  
@@ -93,8 +96,9 @@ class _UpdateState extends State<Update> {
   @override
   void initState() {
     super.initState();
-    print(widget.targetdate);
-    getJson(widget.targetdate);
+    var targetdate = widget.thisarg.date;
+    print(targetdate);
+    getJson(targetdate);
   }
 
   @override

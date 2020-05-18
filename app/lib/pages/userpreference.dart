@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:latlong/latlong.dart';
 
 class SharedPreferencesHelper {
 
@@ -36,4 +37,19 @@ class SharedPreferencesHelper {
     return prefs.setStringList(_kwmofleet, value);
   }
 
+}
+
+
+class LoadingScreenArguments {
+  final Map jsonData;
+  final LatLng center;
+  final double zoom;
+  LoadingScreenArguments(this.jsonData, this.center, this.zoom);
+}
+
+class HomeScreenArguments {
+  final DateTime date;
+  final LatLng center;
+  final double zoom;
+  HomeScreenArguments(this.date, this.center, this.zoom);
 }

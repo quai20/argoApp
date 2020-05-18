@@ -30,8 +30,13 @@ class _MapWidgetState extends State<MapWidget> {
     LatLng center = args.center;
     DateTime displaydate = args.date;
 
-    //Must unzoom to reload tiles... I don't know why yet
-    double zoom = args.zoom - 1;
+    //Must change zoom to reload map tiles... I don't know why yet
+    var maxZoom = 5.0;
+    var minZoom = 3.0;
+    double zoom = args.zoom;
+    if (zoom == maxZoom) {zoom -=1;}
+    else if (zoom == minZoom) {zoom +=1;}
+    else {{zoom -=1;}}
 
     //TURNING DATA INTO MARKERS
     for (var i = 0; i < jsonData['table']['rows'].length; i += 1) {
@@ -99,8 +104,8 @@ class _MapWidgetState extends State<MapWidget> {
         options: MapOptions(
           center: center,
           zoom: zoom,
-          maxZoom: 5.0,
-          minZoom: 3.0,
+          maxZoom: maxZoom,
+          minZoom: minZoom,
         ),
         layers: [
           TileLayerOptions(

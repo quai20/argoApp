@@ -5,7 +5,7 @@
 
 ## Argo network exploration smartphone application
 
-This is the main code for the android application for Argo network discovery. 
+This is the main code for the android application for Argo network discovery. It's not available in app stores yet, so if you want to be a **beta-tester**, please get in touch (issue, twitter @balemkevin, ...).
 
 ### Features :
 

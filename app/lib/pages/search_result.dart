@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -18,47 +20,40 @@ class _SearchResultState extends State<StatefulWidget> {
 
     //Lets build this page like the wmo page
     return Scaffold(
-        appBar: AppBar(title: Text("WMO : " + wmo), actions: <Widget>[
-          FutureBuilder<List<String>>(
-              // get the wmofleetlist, saved in the preferences
-              future: SharedPreferencesHelper.getwmofleet(),
-              initialData: List<String>(),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                    //Future builder for the favorite icon
-                return snapshot.hasData
-                    ? _buildIcon(snapshot.data, wmo)
-                    : Container();
-              }),
-        ]),
-        body: Center(
-            child: ListView(
-          padding: const EdgeInsets.all(8),
-          children: <Widget>[
-            //For the wmo info, here we call erddap, so --> future builder
-            FutureBuilder<List>(
-                // get the wmoinfos, via an erddap function
-                future: fetchInfos(wmo),
-                initialData: [
-                  "...",
-                  "...",
-                  0,
-                  "TYPE",
-                  "0000-00-00T00:00:00Z"
-                ],
-                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                  //here we call the function that will build the body of the page, with wmo info and images
-                  return snapshot.hasData
-                      ? _buildListview(snapshot.data)
-                      : Container();
-                }),
-          ],
-        )));
+      appBar: AppBar(title: Text("WMO : " + wmo), actions: <Widget>[
+        FutureBuilder<List<String>>(
+            // get the wmofleetlist, saved in the preferences
+            future: SharedPreferencesHelper.getwmofleet(),
+            initialData: List<String>(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+              //Future builder for the favorite icon
+              return snapshot.hasData
+                  ? _buildIcon(snapshot.data, wmo)
+                  : Container();
+            }),
+      ]),
+      body: FutureBuilder<List>(
+          // get the wmoinfos, via an erddap function
+          future: fetchInfos(wmo),
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            //here we call the function that will build the body of the page, with wmo info and images
+            if (snapshot.hasData) {
+              return _buildMapview(snapshot.data);
+            } else {
+              return Center(
+                  child: SpinKitFadingCircle(
+                color: Colors.blue[800],
+                size: 50.0,
+              ));
+            }
+          }),
+    );
   }
 
   //Function that builds favorite icon with wmo and fleet list as input
   Widget _buildIcon(List<String> wmolist, String wmo) {
-    if (wmolist.contains(wmo)) {      
+    if (wmolist.contains(wmo)) {
       return IconButton(
           icon: Icon(Icons.favorite, color: Colors.red),
           onPressed: () async {
@@ -80,69 +75,83 @@ class _SearchResultState extends State<StatefulWidget> {
   }
 
   //Function that builds the body of the page, a List view with text info and pictures
-  Widget _buildListview(List wmoinfo) {
-    return SizedBox(
-      height: 600,
-      child:ListView(padding: const EdgeInsets.all(8), children: <Widget>[
-      Container(
-        height: 40,
-        color: Colors.red[200],
-        child: Center(child: Text('PI name : ' + wmoinfo[1])),
+  Widget _buildMapview(List wmoinfo) {
+    var _markers = <Marker>[];
+    var _line = <LatLng>[];
+    var latitude;
+    var longitude;
+
+    //TURNING DATA INTO MARKERS
+    for (var i = 0; i < wmoinfo.length; i += 1) {
+      latitude = wmoinfo[i][5];
+      longitude = wmoinfo[i][6];
+      //TRY CATCH IN CASE OF BAD LAT/LON
+      try {
+        _line.add(LatLng(latitude, longitude));
+        _markers.add(Marker(
+          width: 25.0,
+          height: 25.0,
+          point: new LatLng(latitude+0.025, longitude-0.025),
+          builder: (ctx) => Center(
+                child: IconButton(
+              icon: Icon(Icons.lens),
+              color: Colors.blue[800],
+              iconSize: 15.0,
+              onPressed: () {
+                Navigator.pushNamed(context, '/wmo', arguments: wmoinfo[i]);
+              },
+            )),
+          ),
+        );
+      } catch (e) {
+        print('Error creating marker');
+      }
+    }
+
+    return FlutterMap(
+      options: new MapOptions(
+        center: new LatLng(latitude, longitude),
+        zoom: 5.0,
+        maxZoom: 8.0,
+        minZoom: 3.0,
       ),
-      Container(
-        height: 40,
-        color: Colors.amber[200],
-        child: Center(child: Text('Cycle number : ' + wmoinfo[2].toString())),
-      ),
-      Container(
-        height: 40,
-        color: Colors.cyan[200],
-        child: Center(child: Text('Float type : ' + wmoinfo[3])),
-      ),
-      Container(
-        height: 40,
-        color: Colors.green[200],
-        child: Center(child: Text('Profile date : ' + wmoinfo[4])),
-      ),
-      Container(
-        height: 10,
-        color: Colors.white,
-        child: Center(child: Text('')),
-      ),
-      Container(
-        height: 400,
-        child: CachedNetworkImage(
-          imageUrl:
-              'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.png?longitude,latitude,time&platform_number=%22' +
-                  wmoinfo[0].toString() +
-                  '%22&.draw=linesAndMarkers&.marker=5%7C5&.color=0x000000&.colorBar=KT_thermal%7C%7C%7C%7C%7C&.bgColor=0xffccccff',
-          placeholder: (context, url) => new CircularProgressIndicator(),
-          errorWidget: (context, url, error) => new Icon(Icons.error),
+      layers: [
+        new TileLayerOptions(
+            //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            urlTemplate:
+                "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+            subdomains: ['a', 'b', 'c']),        
+        new PolylineLayerOptions(
+          polylines: [
+            Polyline(points: _line, strokeWidth: 4.0, color: Colors.blue[800]),
+          ],
         ),
-      )
-    ]));
+        new MarkerLayerOptions(markers: _markers),
+      ],
+    );
   }
 
   //Future function that call erddap and fetch wmo information, wmo is returned in a futur builder
   Future<List> fetchInfos(wmo) async {
+    //Get traj data
     var urll =
-        'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Cpi_name%2Ccycle_number%2Cplatform_type%2Ctime&platform_number=%22' +
-            wmo +
-            '%22&orderByMax(%22cycle_number%22)';
+        'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Cpi_name%2Ccycle_number%2Cplatform_type%2Ctime%2Clatitude%2Clongitude&platform_number=%22' +
+            wmo.toString() +
+            '%22&orderBy(%22cycle_number%22)';
     //print(urll);
     final response = await http.get(urll);
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
-      // then parse the JSON.       
+      // then parse the JSON.
       var jsonData = json.decode(response.body);
-      return jsonData['table']['rows'][0];
+      return jsonData['table']['rows'];
     } else {
       // If the server did not return a 200 OK response,
-      // then throw an exception.
+      // then throw an empty point.
       var jsonData = json.decode(
-          '{"table": {"rows": [["7900905", "Steve Rintoul", 15, "APEX", "2020-05-01T15:58:49Z"]]}}');
-      return jsonData['table']['rows'][0];
+          '{"table": {"rows": [["0000000","XXX", 0, "XXX","0000-00-00T00:00:00Z", 0.0, 0.0]]}}');
+      return jsonData['table']['rows'];
     }
   }
 }
@@ -151,13 +160,13 @@ class SharedPreferencesHelper {
   // Instantiation of the SharedPreferences library
   static final String _kwmofleet = "wmofleet";
 
-  // Method that returns the saved wmos, or empty list if none  
+  // Method that returns the saved wmos, or empty list if none
   static Future<List<String>> getwmofleet() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(_kwmofleet) ?? List<String>();
   }
 
-  // Method that saves the fleet  
+  // Method that saves the fleet
   static Future<bool> setwmofleet(List<String> value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setStringList(_kwmofleet, value);

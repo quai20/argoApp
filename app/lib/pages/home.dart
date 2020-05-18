@@ -36,8 +36,8 @@ class _MapWidgetState extends State<MapWidget> {
               icon: Icon(Icons.trip_origin),
               color: Colors.blue[800],
               iconSize: 15.0,
-              onPressed: () {
-                _wmopage(jsonData['table']['rows'][i]);
+              onPressed: () {                
+                Navigator.pushNamed(context, '/wmo', arguments: jsonData['table']['rows'][i]);
               },
             )),
           ),
@@ -212,12 +212,6 @@ class _MapWidgetState extends State<MapWidget> {
           '/update', (Route<dynamic> route) => false,
           arguments: date);
     }, currentTime: DateTime.now());
-  }
-
-  //MARKER ONCLICKED HANDLING
-  void _wmopage(wmodata) {
-    //passing argument to wmo context
-    Navigator.pushNamed(context, '/wmo', arguments: wmodata);
-  }
+  }  
 }
 

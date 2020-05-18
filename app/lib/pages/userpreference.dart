@@ -44,7 +44,8 @@ class LoadingScreenArguments {
   final Map jsonData;
   final LatLng center;
   final double zoom;
-  LoadingScreenArguments(this.jsonData, this.center, this.zoom);
+  final DateTime date;
+  LoadingScreenArguments(this.jsonData, this.center, this.zoom, this.date);
 }
 
 class HomeScreenArguments {

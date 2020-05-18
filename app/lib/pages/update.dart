@@ -35,7 +35,7 @@ class _UpdateState extends State<Update> {
     //Navigator.pushReplacementNamed(context, '/home', arguments: jsonData);
     Navigator.of(context).pushNamedAndRemoveUntil('/home', 
     (Route<dynamic> route) => false, 
-    arguments: LoadingScreenArguments(jsonData,widget.thisarg.center,widget.thisarg.zoom));
+    arguments: LoadingScreenArguments(jsonData,widget.thisarg.center,widget.thisarg.zoom, widget.thisarg.date));
   }
 
   Future<String> makeRequest(targetdate) async {  

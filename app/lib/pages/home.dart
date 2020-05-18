@@ -28,7 +28,10 @@ class _MapWidgetState extends State<MapWidget> {
     LoadingScreenArguments args = ModalRoute.of(context).settings.arguments;
     Map jsonData = args.jsonData;
     LatLng center = args.center;
-    double zoom = args.zoom;
+    DateTime displaydate = args.date;
+
+    //Must unzoom to reload tiles... I don't know why yet
+    double zoom = args.zoom - 1;
 
     //TURNING DATA INTO MARKERS
     for (var i = 0; i < jsonData['table']['rows'].length; i += 1) {
@@ -47,8 +50,9 @@ class _MapWidgetState extends State<MapWidget> {
               icon: Icon(Icons.trip_origin),
               color: Colors.blue[800],
               iconSize: 15.0,
-              onPressed: () {                    
-                Navigator.pushNamed(context, '/wmo', arguments: jsonData['table']['rows'][i]);
+              onPressed: () {
+                Navigator.pushNamed(context, '/wmo',
+                    arguments: jsonData['table']['rows'][i]);
               },
             )),
           ),
@@ -62,7 +66,31 @@ class _MapWidgetState extends State<MapWidget> {
     return new Scaffold(
       appBar: new AppBar(title: _setAppBarTitle(), actions: <Widget>[
         //ADD CALENDAR
-        IconButton(icon: Icon(Icons.calendar_today), onPressed: _setDate),
+        IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () {
+              //CALENDAR HANDLING
+              var now = new DateTime.now();
+              //ACCESS THE YESTERDAY DATA ONLY AFTER 6am (data is updated at 5am (France))
+              //THIS IS PROBABLY A SOURCE OF ERROR FOR AN INTERNATIONAL USE
+              if (now.hour > 6) {
+                now = now.subtract(new Duration(days: 1));
+              } else {
+                now = now.subtract(new Duration(days: 2));
+              }
+
+              var from = DateTime.now().subtract(new Duration(days: 10));
+              DatePicker.showDatePicker(context,
+                  showTitleActions: true,
+                  minTime: from,
+                  maxTime: now,
+                  onChanged: (date) {}, onConfirm: (date) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/update', (Route<dynamic> route) => false,
+                    arguments: HomeScreenArguments(
+                        date, mapController.center, mapController.zoom));
+              }, currentTime: displaydate);
+            }),
       ]),
       backgroundColor: Colors.blue[800],
       //ADD MAP
@@ -202,27 +230,4 @@ class _MapWidgetState extends State<MapWidget> {
           }
         });
   }
-
-  //CALENDAR HANDLING
-  void _setDate() {
-    var now = new DateTime.now();
-    //ACCESS THE YESTERDAY DATA ONLY AFTER 6am (data is updated at 5am (France))
-    //THIS IS PROBABLY A SOURCE OF ERROR FOR AN INTERNATIONAL USAGE
-    if (now.hour > 6) {
-      now = now.subtract(new Duration(days: 1));
-    } else {
-      now = now.subtract(new Duration(days: 2));
-    }
-
-    var from = DateTime.now().subtract(new Duration(days: 10));
-    DatePicker.showDatePicker(context,
-        showTitleActions: true,
-        minTime: from,
-        maxTime: now,
-        onChanged: (date) {}, onConfirm: (date) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          '/update', (Route<dynamic> route) => false,
-          arguments: HomeScreenArguments(date,mapController.center,mapController.zoom));
-    }, currentTime: DateTime.now());
-  }  
 }

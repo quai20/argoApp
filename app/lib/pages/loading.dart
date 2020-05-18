@@ -37,7 +37,7 @@ class _LoadingState extends State<Loading> {
     //also removing this page from the app tree, it's useless after loading
     Navigator.of(context).pushNamedAndRemoveUntil('/home', 
     (Route<dynamic> route) => false, 
-    arguments: LoadingScreenArguments(jsonData,LatLng(40.0, -8.0),4.0));
+    arguments: LoadingScreenArguments(jsonData,LatLng(40.0, -8.0),4.0,targetdate));
   }
 
   //makeRequest has to return Future (and be async) to avoid getting stuck during http call

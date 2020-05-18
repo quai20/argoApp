@@ -80,20 +80,18 @@ class _SearchResultState extends State<StatefulWidget> {
     var _line = <LatLng>[];
     var latitude;
     var longitude;
-
+    
     //TURNING DATA INTO MARKERS
     for (var i = 0; i < wmoinfo.length; i += 1) {
       latitude = wmoinfo[i][5];
-      longitude = wmoinfo[i][6];
+      longitude = wmoinfo[i][6];      
       //TRY CATCH IN CASE OF BAD LAT/LON
       try {
         _line.add(LatLng(latitude, longitude));
-        _markers.add(Marker(
-          width: 25.0,
-          height: 25.0,
-          point: new LatLng(latitude+0.025, longitude-0.025),
-          builder: (ctx) => Center(
-                child: IconButton(
+        _markers.add(Marker(          
+          point: new LatLng(latitude, longitude),         
+          builder: (ctx) => Container(                                   
+                child: IconButton(                                
               icon: Icon(Icons.lens),
               color: Colors.blue[800],
               iconSize: 15.0,
@@ -101,12 +99,28 @@ class _SearchResultState extends State<StatefulWidget> {
                 Navigator.pushNamed(context, '/wmo', arguments: wmoinfo[i]);
               },
             )),
+            anchorPos: AnchorPos.align(AnchorAlign.center),
           ),
         );
       } catch (e) {
         print('Error creating marker');
       }
     }
+
+    _markers.add(Marker(                              
+          point: new LatLng( wmoinfo[wmoinfo.length-1][5], wmoinfo[wmoinfo.length-1][6]),          
+          builder: (ctx) => Container(
+                child: IconButton(
+              icon: Icon(Icons.lens),
+              color: Colors.red,
+              iconSize: 15.0,                            
+              onPressed: () {
+                Navigator.pushNamed(context, '/wmo', arguments: wmoinfo[wmoinfo.length-1]);
+              },
+            )),
+            anchorPos: AnchorPos.align(AnchorAlign.center),
+          ),
+        );
 
     return FlutterMap(
       options: new MapOptions(

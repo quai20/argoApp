@@ -29,11 +29,10 @@ class _MapWidgetState extends State<MapWidget> {
     Map jsonData = args.jsonData;
     LatLng center = args.center;
     DateTime displaydate = args.date;
-
-    //Must change zoom to reload map tiles... I don't know why yet
+    double zoom = args.zoom;
     var maxZoom = 5.0;
     var minZoom = 3.0;
-    double zoom = args.zoom;
+    //Must change zoom to reload map tiles... I don't know why yet, some caching issue
     if (zoom == maxZoom) {zoom -=1;}
     else if (zoom == minZoom) {zoom +=1;}
     else {{zoom -=1;}}
@@ -112,7 +111,8 @@ class _MapWidgetState extends State<MapWidget> {
               //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
               urlTemplate:
                   "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-              subdomains: ['a', 'b', 'c']),
+              subdomains: ['a', 'b', 'c'],
+              ),
           MarkerLayerOptions(markers: _markers),
         ],
       ),

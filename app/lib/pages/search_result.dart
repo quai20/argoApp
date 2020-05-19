@@ -13,6 +13,7 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResultState extends State<StatefulWidget> {
+
   @override
   Widget build(BuildContext context) {
     //Get wmo searched from context page
@@ -126,7 +127,7 @@ class _SearchResultState extends State<StatefulWidget> {
     return FlutterMap(
       options: new MapOptions(
         center: new LatLng(latitude, longitude),
-        zoom: 5.0,
+        zoom: 6.0,
         maxZoom: 8.0,
         minZoom: 3.0,
       ),
@@ -135,7 +136,8 @@ class _SearchResultState extends State<StatefulWidget> {
             //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             urlTemplate:
                 "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-            subdomains: ['a', 'b', 'c']),        
+            subdomains: ['a', 'b', 'c'],
+            ),        
         new PolylineLayerOptions(
           polylines: [
             Polyline(points: _line, strokeWidth: 4.0, color: Colors.blue[800]),

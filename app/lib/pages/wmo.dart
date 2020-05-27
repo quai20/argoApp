@@ -18,6 +18,13 @@ class _WmoState extends State<StatefulWidget> {
         appBar: AppBar(
             title: Text("WMO : " + wmodata[0].toString()),
             actions: <Widget>[
+              //TRAJ icon to acess trajectory from a profile
+              IconButton(
+                  icon: Icon(Icons.grain),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/search_result',
+                          arguments: wmodata[0].toString());
+                  }),
               //For the heart icon, we use a future builder because we're gonna load fleet list
               //from user preferencies and compare our wmo to this list
               FutureBuilder<List<String>>(
@@ -67,8 +74,12 @@ class _WmoState extends State<StatefulWidget> {
             Container(
               height: 400,
               child: CachedNetworkImage(
-                imageUrl:'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.png?temp,pres,psal&platform_number=%22'
-                +wmodata[0].toString()+'%22&cycle_number='+wmodata[2].toString()+'&.draw=linesAndMarkers&.marker=5%7C5&.color=0x000000&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff&.yRange=%7C%7Cfalse%7C',
+                imageUrl:
+                    'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.png?temp,pres,psal&platform_number=%22' +
+                        wmodata[0].toString() +
+                        '%22&cycle_number=' +
+                        wmodata[2].toString() +
+                        '&.draw=linesAndMarkers&.marker=5%7C5&.color=0x000000&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff&.yRange=%7C%7Cfalse%7C',
                 placeholder: (context, url) => new CircularProgressIndicator(),
                 errorWidget: (context, url, error) => new Icon(Icons.error),
               ),
@@ -79,7 +90,7 @@ class _WmoState extends State<StatefulWidget> {
 
   //THis is the function that builds the favorite icon with wmo and fleet list iin input
   Widget _buildIcon(List<String> wmolist, String wmo) {
-    if (wmolist.contains(wmo)) {      
+    if (wmolist.contains(wmo)) {
       return IconButton(
           icon: Icon(Icons.favorite, color: Colors.red),
           onPressed: () async {

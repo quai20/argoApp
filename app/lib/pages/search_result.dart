@@ -75,7 +75,7 @@ class _SearchResultState extends State<StatefulWidget> {
     }
   }
 
-  //Function that builds the body of the page, a List view with text info and pictures
+  //Function that builds the body of the page, a Map view with trajectory
   Widget _buildMapview(List wmoinfo) {
     var _markers = <Marker>[];
     var _line = <LatLng>[];

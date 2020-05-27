@@ -34,10 +34,10 @@ class _FleetState extends State<StatefulWidget> {
           return new ListTile(
               title: Text(wmolist[index],
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              trailing: Wrap(spacing: 10, children: <Widget>[
+              trailing: Wrap(spacing: 5, children: <Widget>[
                 //Let's add button to sea wmo page
                 IconButton(
-                    icon: Icon(Icons.remove_red_eye, color: Colors.black),
+                    icon: Icon(Icons.grain, color: Colors.black),
                     onPressed: () {
                       //Call search page for wmolist[index]
                       Navigator.pushNamed(context, '/search_result',

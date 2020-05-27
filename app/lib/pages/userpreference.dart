@@ -39,7 +39,6 @@ class SharedPreferencesHelper {
 
 }
 
-
 class LoadingScreenArguments {
   final Map jsonData;
   final LatLng center;

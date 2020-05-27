@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:Argo/pages/home.dart';
 import 'package:Argo/pages/loading.dart';
 import 'package:Argo/pages/wmo.dart';
+import 'package:Argo/pages/wmor.dart';
 import 'package:Argo/pages/update.dart';
 import 'package:Argo/pages/about.dart';
 import 'package:Argo/pages/argo.dart';
@@ -19,7 +20,8 @@ void main() => runApp(MaterialApp(
     routes: {      
       '/': (context) => Loading(targetdate:DateTime.now().subtract(new Duration(days: 1))),
       '/home': (context) => MapWidget(),   
-      '/wmo': (context) => Wmo(),        
+      '/wmo': (context) => Wmo(),
+      '/wmor': (context) => Wmor(),        
       '/update': (context) => Update(thisarg:ModalRoute.of(context).settings.arguments),      
       '/about': (context) => About(),
       '/argo': (context) => Argo(),   

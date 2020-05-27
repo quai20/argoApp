@@ -95,7 +95,7 @@ class _UpdateState extends State<Update> {
 
   @override
   void initState() {
-    super.initState();
+    super.initState();    
     var targetdate = widget.thisarg.date;
     print(targetdate);
     getJson(targetdate);

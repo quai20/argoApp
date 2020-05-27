@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Argo/pages/userpreference.dart';
 
-class Wmo extends StatefulWidget {
+class Wmor extends StatefulWidget {
   @override
-  _WmoState createState() => new _WmoState();
+  _WmorState createState() => new _WmorState();
 }
 
-class _WmoState extends State<StatefulWidget> {
+class _WmorState extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
     //Get wmo clicked from page context    
@@ -17,14 +17,7 @@ class _WmoState extends State<StatefulWidget> {
     return Scaffold(
         appBar: AppBar(
             title: Text("WMO : " + wmodata[0].toString()),
-            actions: <Widget>[
-              //TRAJ icon to acess trajectory from a profile              
-              IconButton(
-                  icon: Icon(Icons.grain),
-                  onPressed: () {                    
-                    Navigator.pushNamed(context, '/search_result',
-                          arguments: wmodata[0].toString());
-                  }),
+            actions: <Widget>[             
               //For the heart icon, we use a future builder because we're gonna load fleet list
               //from user preferencies and compare our wmo to this list
               FutureBuilder<List<String>>(

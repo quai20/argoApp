@@ -82,17 +82,19 @@ class _LoadingState extends State<Loading> {
 
     // Erddap request send time out too often, going server side...
     var urll='http://collab.umr-lops.fr/app/divaa/data/json/'+syear+'-'+smonth+'-'+sday+'.json';
-    print(urll);
+    //print(urll);
     
     //HTTP CALL
     var client = http.Client();
     try {
       var response = await client.get(urll);
+      SharedPreferencesHelper.setstatus(true);
       return response.body;
     } on Exception catch (ex) {
       print('Erddap error: $ex');
       //load test dataset if request fails, not sure if it's a good idea
       var stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
+      SharedPreferencesHelper.setstatus(false);
       return stringJson;
     } finally {
       client.close();

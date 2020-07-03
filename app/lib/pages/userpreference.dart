@@ -3,8 +3,25 @@ import 'package:latlong/latlong.dart';
 
 class SharedPreferencesHelper {
 
-  // LANGUAGE
+  //CONNECTION STATUS
+  // Instantiation of the SharedPreferences library
+  static final String _kstatus = "isconnected";
 
+  // Method that returns the saved language
+  static Future<bool> getstatus() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //default true
+    return prefs.getBool(_kstatus) ?? true;
+  }
+
+  // Method that saves the user language
+  static Future<bool> setstatus(bool value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(_kstatus, value);
+  }
+  
+  
+  // LANGUAGE
   // Instantiation of the SharedPreferences library
   static final String _klanguage = "userlanguage";
 

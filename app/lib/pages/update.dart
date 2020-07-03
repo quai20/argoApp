@@ -77,15 +77,17 @@ class _UpdateState extends State<Update> {
     
     //THIS IS MUCH FASTER WITH A JSON STORE SOMEWHERE ELSE, THIS COULD BE THE TRICK, LET'S SAY GENERATE JSON FOR 10 past DAYS ON SERVERSIDE... 
     var urll='http://collab.umr-lops.fr/app/divaa/data/json/'+syear+'-'+smonth+'-'+sday+'.json';
-    print(urll);
+    //print(urll);
 
     var client = http.Client();
     try {
       var response = await client.get(urll);
+      SharedPreferencesHelper.setstatus(true);
       return response.body;
     } on Exception catch (ex) {
       print('Erddap error: $ex');
       var stringJson = await rootBundle.loadString('assets/ArgoFloats_testdata.json');
+      SharedPreferencesHelper.setstatus(false);
       return stringJson;
     } finally {
       client.close();

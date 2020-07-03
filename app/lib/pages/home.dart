@@ -33,9 +33,15 @@ class _MapWidgetState extends State<MapWidget> {
     var maxZoom = 5.0;
     var minZoom = 3.0;
     //Must change zoom to reload map tiles... I don't know why yet, some caching issue
-    if (zoom == maxZoom) {zoom -=1;}
-    else if (zoom == minZoom) {zoom +=1;}
-    else {{zoom -=1;}}
+    if (zoom == maxZoom) {
+      zoom -= 1;
+    } else if (zoom == minZoom) {
+      zoom += 1;
+    } else {
+      {
+        zoom -= 1;
+      }
+    }
 
     //TURNING DATA INTO MARKERS
     for (var i = 0; i < jsonData['table']['rows'].length; i += 1) {
@@ -108,11 +114,11 @@ class _MapWidgetState extends State<MapWidget> {
         ),
         layers: [
           TileLayerOptions(
-              //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              urlTemplate:
-                  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-              subdomains: ['a', 'b', 'c'],
-              ),
+            //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            urlTemplate:
+                "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+            subdomains: ['a', 'b', 'c'],
+          ),
           MarkerLayerOptions(markers: _markers),
         ],
       ),
@@ -126,25 +132,36 @@ class _MapWidgetState extends State<MapWidget> {
     );
   }
 
+  Future<String> definelanguage() async {
+    var isonline = await SharedPreferencesHelper.getstatus();
+    var language = await SharedPreferencesHelper.getlanguage();    
+
+    if (isonline) {
+      switch (language) {
+        case 'english':
+          {
+            return 'Argo network';
+          }
+          break;
+        case 'francais':
+          {
+            return 'Le réseau Argo';
+          }
+          break;
+      }
+    } else {
+      return 'Demo [offline]';
+    }
+  }
+
   _setAppBarTitle() {
     return FutureBuilder<String>(
         // get the language, saved in the user preferences
-        future: SharedPreferencesHelper.getlanguage(),
-        initialData: 'english',
+        future: definelanguage(),
+        initialData: ' ',
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
-            switch (snapshot.data) {
-              case 'english':
-                {
-                  return Text('Argo network');
-                }
-                break;
-              case 'francais':
-                {
-                  return Text('Le réseau Argo');
-                }
-                break;
-            }
+            return (Text(snapshot.data));
           }
         });
   }

@@ -80,14 +80,9 @@ class _MapWidgetState extends State<MapWidget> {
             icon: Icon(Icons.calendar_today),
             onPressed: () {
               //CALENDAR HANDLING
-              var now = new DateTime.now();
-              //ACCESS THE YESTERDAY DATA ONLY AFTER 12am (data is updated at 5am & 11am (France))
-              //THIS IS FOR SURE A SOURCE OF ERROR FOR AN INTERNATIONAL USE
-              if (now.hour > 12) {
-                now = now.subtract(new Duration(days: 1));
-              } else {
-                now = now.subtract(new Duration(days: 2));
-              }
+              var now = new DateTime.now();              
+              //THIS IS FOR SURE A SOURCE OF ERROR FOR AN INTERNATIONAL USE              
+              now = now.subtract(new Duration(days: 1));              
 
               var from = DateTime.now().subtract(new Duration(days: 10));
               DatePicker.showDatePicker(context,

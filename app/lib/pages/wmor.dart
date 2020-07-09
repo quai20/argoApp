@@ -66,16 +66,7 @@ class _WmorState extends State<StatefulWidget> {
             // and we call an erddap image with cachednetworkimage
             Container(
               height: 400,
-              child: CachedNetworkImage(
-                imageUrl:
-                    'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.png?temp,pres,psal&platform_number=%22' +
-                        wmodata[0].toString() +
-                        '%22&cycle_number=' +
-                        wmodata[2].toString() +
-                        '&.draw=linesAndMarkers&.marker=5%7C5&.color=0x000000&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff&.yRange=%7C%7Cfalse%7C',
-                placeholder: (context, url) => new CircularProgressIndicator(),
-                errorWidget: (context, url, error) => new Icon(Icons.error),
-              ),
+              child: Text(''), //FUTURE BUILDER HERE,
             )
           ],
         )));

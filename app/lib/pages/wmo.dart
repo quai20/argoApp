@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Argo/pages/userpreference.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class Wmo extends StatefulWidget {
   @override
@@ -9,10 +9,32 @@ class Wmo extends StatefulWidget {
 
 class _WmoState extends State<StatefulWidget> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {       
     //Get wmo clicked from page context    
-    List wmodata = ModalRoute.of(context).settings.arguments;
-    print(Navigator.of(context));
+    List wmodata = ModalRoute.of(context).settings.arguments;    
+
+    //        
+    var temp = [[0.0,25.0],[10.0,26.0],[20.0,25.0],[30.0,26.0],[40.0,24.0],[50.0,25.0],[60.0,22.0]];  
+    var psal = [[0.0,33.0],[10.0,33.2],[20.0,33.1],[30.0,33.5],[40.0,33.0],[50.0,32.6],[60.0,33.0]];  
+
+    var thisseries = [
+      new charts.Series<List<double>, double>(
+        id: 'Temp',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (datv, _) => datv[0],
+        measureFn: (datv, _) => datv[1],
+        data: temp,
+      ),
+      new charts.Series<List<double>, double>(
+        id: 'Psal',
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        domainFn: (datv, _) => datv[0],
+        measureFn: (datv, _) => datv[1],
+        data: psal,
+      )..setAttribute(charts.measureAxisIdKey, 'secondaryMeasureAxisId')
+    ];
+
+
     //Lets build the page
     return Scaffold(
         appBar: AppBar(
@@ -70,19 +92,19 @@ class _WmoState extends State<StatefulWidget> {
               color: Colors.white,
               child: Center(child: Text('')),
             ),
-            // and we call an erddap image with cachednetworkimage
+            // and the charts
             Container(
               height: 400,
-              child: CachedNetworkImage(
-                imageUrl:
-                    'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.png?temp,pres,psal&platform_number=%22' +
-                        wmodata[0].toString() +
-                        '%22&cycle_number=' +
-                        wmodata[2].toString() +
-                        '&.draw=linesAndMarkers&.marker=5%7C5&.color=0x000000&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff&.yRange=%7C%7Cfalse%7C',
-                placeholder: (context, url) => new CircularProgressIndicator(),
-                errorWidget: (context, url, error) => new Icon(Icons.error),
-              ),
+              child:new charts.LineChart(
+                thisseries, 
+                animate: false,                 
+                primaryMeasureAxis: new charts.NumericAxisSpec(
+                  tickProviderSpec:
+                    new charts.BasicNumericTickProviderSpec(desiredTickCount: 4)),
+                secondaryMeasureAxis: new charts.NumericAxisSpec(
+                  tickProviderSpec:
+                    new charts.BasicNumericTickProviderSpec(desiredTickCount: 4))                
+              )
             )
           ],
         )));

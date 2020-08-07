@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:Argo/pages/userpreference.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fcharts/fcharts.dart';
 
 class Wmo extends StatefulWidget {
   @override
@@ -8,32 +8,26 @@ class Wmo extends StatefulWidget {
 }
 
 class _WmoState extends State<StatefulWidget> {
+
+  final points = [
+    [10.0,25.0,33.0],
+    [22.0,26.0,32.0],
+    [30.0,25.0,33.1],
+    [45.0,24.0,33.3],
+    [50.0,23.0,32.9],
+    [60.0,23.0,32.3],
+    [70.0,25.0,33.0]
+  ];
+
   @override
   Widget build(BuildContext context) {       
     //Get wmo clicked from page context    
-    List wmodata = ModalRoute.of(context).settings.arguments;    
-
-    //        
-    var temp = [[0.0,25.0],[10.0,26.0],[20.0,25.0],[30.0,26.0],[40.0,24.0],[50.0,25.0],[60.0,22.0]];  
-    var psal = [[0.0,33.0],[10.0,33.2],[20.0,33.1],[30.0,33.5],[40.0,33.0],[50.0,32.6],[60.0,33.0]];  
-
-    var thisseries = [
-      new charts.Series<List<double>, double>(
-        id: 'Temp',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (datv, _) => datv[0],
-        measureFn: (datv, _) => datv[1],
-        data: temp,
-      ),
-      new charts.Series<List<double>, double>(
-        id: 'Psal',
-        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
-        domainFn: (datv, _) => datv[0],
-        measureFn: (datv, _) => datv[1],
-        data: psal,
-      )..setAttribute(charts.measureAxisIdKey, 'secondaryMeasureAxisId')
-    ];
-
+    List wmodata = ModalRoute.of(context).settings.arguments;            
+    final yAxis = new ChartAxis<double>(
+      opposite: false,
+      span: DoubleSpan(100.0,0.0),
+      tickGenerator: AutoTickGenerator()
+    );
 
     //Lets build the page
     return Scaffold(
@@ -95,16 +89,53 @@ class _WmoState extends State<StatefulWidget> {
             // and the charts
             Container(
               height: 400,
-              child:new charts.LineChart(
-                thisseries, 
-                animate: false,                 
-                primaryMeasureAxis: new charts.NumericAxisSpec(
-                  tickProviderSpec:
-                    new charts.BasicNumericTickProviderSpec(desiredTickCount: 4)),
-                secondaryMeasureAxis: new charts.NumericAxisSpec(
-                  tickProviderSpec:
-                    new charts.BasicNumericTickProviderSpec(desiredTickCount: 4))                
-              )
+              child: new LineChart(
+        chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
+        lines: [
+          // Temp line
+          new Line<List<double>, double, double>(
+            data: points,
+            xFn: (meas) => meas[1],
+            yFn: (meas) => meas[0],
+            xAxis: new ChartAxis(
+              span: new DoubleSpan(23.0, 26.0),                          
+              tickLabelerStyle: new TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              paint: const PaintOptions.stroke(color: Colors.blue),
+            ),
+            yAxis: yAxis,            
+            marker: const MarkerOptions(
+              paint: const PaintOptions.fill(color: Colors.blue),
+            ),
+            stroke: const PaintOptions.stroke(color: Colors.blue),
+            legend: new LegendItem(
+              paint: const PaintOptions.fill(color: Colors.blue),
+              text: 'Temp',
+            ),
+          ),
+
+          // size line
+          new Line<List<double>, double, double>(
+            data: points,
+            xFn: (meas) => meas[2],
+            yFn: (meas) => meas[0],
+            xAxis: new ChartAxis(              
+              offset: -350.0,              
+              paint: const PaintOptions.stroke(color: Colors.green),
+              tickLabelerStyle: new TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+            yAxis: yAxis,
+            marker: const MarkerOptions(
+              paint: const PaintOptions.fill(color: Colors.green),
+              shape: MarkerShapes.square,
+            ),
+            stroke: const PaintOptions.stroke(color: Colors.green),
+            legend: new LegendItem(
+              paint: const PaintOptions.fill(color: Colors.green),
+              text: 'Psal',
+            ),
+          ),
+        ],
+      ),
             )
           ],
         )));

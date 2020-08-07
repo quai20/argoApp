@@ -30,8 +30,8 @@ class _MapWidgetState extends State<MapWidget> {
     LatLng center = args.center;
     DateTime displaydate = args.date;
     double zoom = args.zoom;
-    var maxZoom = 5.0;
-    var minZoom = 3.0;
+    var maxZoom = 6.0;
+    var minZoom = 2.0;
     //Must change zoom to reload map tiles... I don't know why yet, some caching issue
     if (zoom == maxZoom) {
       zoom -= 1;
@@ -59,7 +59,7 @@ class _MapWidgetState extends State<MapWidget> {
                 child: IconButton(
               icon: Icon(Icons.trip_origin),
               color: Colors.blue[800],
-              iconSize: 15.0,
+              iconSize: 10.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo',
                     arguments: jsonData['table']['rows'][i]);

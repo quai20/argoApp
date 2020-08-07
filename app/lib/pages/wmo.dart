@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:Argo/pages/userpreference.dart';
 import 'package:fcharts/fcharts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
 class Wmo extends StatefulWidget {
   @override
@@ -8,38 +11,22 @@ class Wmo extends StatefulWidget {
 }
 
 class _WmoState extends State<StatefulWidget> {
-
-  final points = [
-    [10.0,25.0,33.0],
-    [22.0,26.0,32.0],
-    [30.0,25.0,33.1],
-    [45.0,24.0,33.3],
-    [50.0,23.0,32.9],
-    [60.0,23.0,32.3],
-    [70.0,25.0,33.0]
-  ];
-
   @override
-  Widget build(BuildContext context) {       
-    //Get wmo clicked from page context    
-    List wmodata = ModalRoute.of(context).settings.arguments;            
-    final yAxis = new ChartAxis<double>(
-      opposite: false,
-      span: DoubleSpan(100.0,0.0),
-      tickGenerator: AutoTickGenerator()
-    );
+  Widget build(BuildContext context) {
+    //Get wmo clicked from page context
+    List wmodata = ModalRoute.of(context).settings.arguments;
 
     //Lets build the page
     return Scaffold(
         appBar: AppBar(
             title: Text("WMO : " + wmodata[0].toString()),
             actions: <Widget>[
-              //TRAJ icon to acess trajectory from a profile              
+              //TRAJ icon to acess trajectory from a profile
               IconButton(
                   icon: Icon(Icons.grain),
-                  onPressed: () {                    
+                  onPressed: () {
                     Navigator.pushNamed(context, '/search_result',
-                          arguments: wmodata[0].toString());
+                        arguments: wmodata[0].toString());
                   }),
               //For the heart icon, we use a future builder because we're gonna load fleet list
               //from user preferencies and compare our wmo to this list
@@ -88,57 +75,79 @@ class _WmoState extends State<StatefulWidget> {
             ),
             // and the charts
             Container(
-              height: 400,
-              child: new LineChart(
-        chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
-        lines: [
-          // Temp line
-          new Line<List<double>, double, double>(
-            data: points,
-            xFn: (meas) => meas[1],
-            yFn: (meas) => meas[0],
-            xAxis: new ChartAxis(
-              span: new DoubleSpan(23.0, 26.0),                          
-              tickLabelerStyle: new TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              paint: const PaintOptions.stroke(color: Colors.blue),
-            ),
-            yAxis: yAxis,            
-            marker: const MarkerOptions(
-              paint: const PaintOptions.fill(color: Colors.blue),
-            ),
-            stroke: const PaintOptions.stroke(color: Colors.blue),
-            legend: new LegendItem(
-              paint: const PaintOptions.fill(color: Colors.blue),
-              text: 'Temp',
-            ),
-          ),
-
-          // size line
-          new Line<List<double>, double, double>(
-            data: points,
-            xFn: (meas) => meas[2],
-            yFn: (meas) => meas[0],
-            xAxis: new ChartAxis(              
-              offset: -350.0,              
-              paint: const PaintOptions.stroke(color: Colors.green),
-              tickLabelerStyle: new TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-            ),
-            yAxis: yAxis,
-            marker: const MarkerOptions(
-              paint: const PaintOptions.fill(color: Colors.green),
-              shape: MarkerShapes.square,
-            ),
-            stroke: const PaintOptions.stroke(color: Colors.green),
-            legend: new LegendItem(
-              paint: const PaintOptions.fill(color: Colors.green),
-              text: 'Psal',
-            ),
-          ),
-        ],
-      ),
-            )
+                height: 400,
+                child: FutureBuilder<List<List<double>>>(
+                    // retrieve data
+                    future: _retrievedata(
+                        wmodata[0].toString(), wmodata[2].toString()),
+                    initialData: [
+                      [0.0, 0.0, 0.0]
+                    ],
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<List<double>>> snapshot) {
+                      //Here we call the build function
+                      return snapshot.hasData
+                          ? _buildChart(snapshot.data)
+                          : Container();
+                    }))
           ],
         )));
+  }
+
+  Widget _buildChart(points) {
+    final yAxis = new ChartAxis<double>(
+        opposite: false,
+        //span: DoubleSpan(2000.0,0.0),
+        tickGenerator: AutoTickGenerator());
+
+    return LineChart(
+      chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
+      lines: [
+        // Temp line
+        new Line<List<double>, double, double>(
+          data: points,
+          xFn: (meas) => meas[1],
+          yFn: (meas) => meas[0],
+          xAxis: new ChartAxis(
+            tickLabelerStyle:
+                new TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            paint: const PaintOptions.stroke(color: Colors.blue),
+          ),
+          yAxis: yAxis,
+          marker: const MarkerOptions(
+            paint: const PaintOptions.fill(color: Colors.blue),
+          ),
+          stroke: const PaintOptions.stroke(color: Colors.blue),
+          legend: new LegendItem(
+            paint: const PaintOptions.fill(color: Colors.blue),
+            text: 'Temp',
+          ),
+        ),
+
+        // size line
+        new Line<List<double>, double, double>(
+          data: points,
+          xFn: (meas) => meas[2],
+          yFn: (meas) => meas[0],
+          xAxis: new ChartAxis(
+            offset: -350.0,
+            paint: const PaintOptions.stroke(color: Colors.green),
+            tickLabelerStyle:
+                new TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+          ),
+          yAxis: yAxis,
+          marker: const MarkerOptions(
+            paint: const PaintOptions.fill(color: Colors.green),
+            shape: MarkerShapes.square,
+          ),
+          stroke: const PaintOptions.stroke(color: Colors.green),
+          legend: new LegendItem(
+            paint: const PaintOptions.fill(color: Colors.green),
+            text: 'Psal',
+          ),
+        ),
+      ],
+    );
   }
 
   //THis is the function that builds the favorite icon with wmo and fleet list iin input
@@ -160,5 +169,29 @@ class _WmoState extends State<StatefulWidget> {
             setState(() {});
           });
     }
-  } 
+  }
+}
+
+Future<List<List<double>>> _retrievedata(wmo, cycle) async {
+  var urll =
+      'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pres%2Ctemp%2Cpsal&platform_number=%22' +
+          wmo +
+          '%22&cycle_number=' +
+          cycle +
+          '&orderBy(%22pres%22)';
+  var stringJson;
+  var jsonData;
+
+  //HTTP CALL
+  var client = http.Client();
+  try {
+    var response = await client.get(urll);
+    stringJson = response.body;
+  } on Exception catch (ex) {
+    print('Erddap error: $ex');
+  } finally {
+    client.close();
+  }
+  jsonData = json.decode(stringJson);
+  return jsonData['table']['rows'];
 }

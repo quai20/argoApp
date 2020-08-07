@@ -173,15 +173,29 @@ class _WmoState extends State<StatefulWidget> {
 }
 
 Future<List<List<double>>> _retrievedata(wmo, cycle) async {
+  var stringJson;
+  var jsonData;
   var urll =
       'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pres%2Ctemp%2Cpsal&platform_number=%22' +
           wmo +
           '%22&cycle_number=' +
           cycle +
           '&orderBy(%22pres%22)';
-  var stringJson;
-  var jsonData;
+  try {
+    //CALLING makeRequest with await to wait for the answer
+    stringJson = await makeRequest(urll);
+    jsonData = json.decode(stringJson);
+    return jsonData['table']['rows'];
+  } on Exception catch (ex) {
+    print('Erddap error: $ex');
+    return [
+      [0.0, 0.0, 0.0]
+    ];
+  }
+}
 
+Future<String> makeRequest(urll) async {
+  var stringJson;
   //HTTP CALL
   var client = http.Client();
   try {
@@ -192,6 +206,5 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
   } finally {
     client.close();
   }
-  jsonData = json.decode(stringJson);
-  return jsonData['table']['rows'];
+  return stringJson;
 }

@@ -4,6 +4,7 @@ import 'package:fcharts/fcharts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:scidart/numdart.dart';
 
 class Wmo extends StatefulWidget {
   @override
@@ -97,9 +98,9 @@ class _WmoState extends State<StatefulWidget> {
   Widget _buildChart(points) {
     final yAxis = new ChartAxis<double>(
         opposite: false,
-        //span: DoubleSpan(2000.0,0.0),
-        tickGenerator: AutoTickGenerator());
-
+        span: DoubleSpan(2000.0, 0.0),
+        tickGenerator:
+            FixedTickGenerator(ticks: arange(start: 0, stop: 2000, step: 200)));
     return LineChart(
       chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
       lines: [
@@ -109,15 +110,17 @@ class _WmoState extends State<StatefulWidget> {
           xFn: (meas) => meas[1],
           yFn: (meas) => meas[0],
           xAxis: new ChartAxis(
-            tickLabelerStyle:
-                new TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-            paint: const PaintOptions.stroke(color: Colors.blue),
-          ),
+              tickLabelerStyle: new TextStyle(
+                  color: Colors.blue, fontWeight: FontWeight.bold),
+              paint: const PaintOptions.stroke(color: Colors.blue),
+              tickGenerator: EmptyTickGenerator()),
           yAxis: yAxis,
           marker: const MarkerOptions(
-            paint: const PaintOptions.fill(color: Colors.blue),
-          ),
-          stroke: const PaintOptions.stroke(color: Colors.blue),
+              paint: const PaintOptions.fill(color: Colors.blue),
+              shape: MarkerShapes.circle,
+              size: 2.0),
+          stroke: const PaintOptions.stroke(
+              color: Colors.transparent, strokeWidth: 0.0),
           legend: new LegendItem(
             paint: const PaintOptions.fill(color: Colors.blue),
             text: 'Temp',
@@ -134,13 +137,15 @@ class _WmoState extends State<StatefulWidget> {
             paint: const PaintOptions.stroke(color: Colors.green),
             tickLabelerStyle:
                 new TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            tickGenerator: EmptyTickGenerator(),
           ),
           yAxis: yAxis,
           marker: const MarkerOptions(
-            paint: const PaintOptions.fill(color: Colors.green),
-            shape: MarkerShapes.square,
-          ),
-          stroke: const PaintOptions.stroke(color: Colors.green),
+              paint: const PaintOptions.fill(color: Colors.green),
+              shape: MarkerShapes.circle,
+              size: 2.0),
+          stroke: const PaintOptions.stroke(
+              color: Colors.transparent, strokeWidth: 0.0),
           legend: new LegendItem(
             paint: const PaintOptions.fill(color: Colors.green),
             text: 'Psal',
@@ -173,38 +178,39 @@ class _WmoState extends State<StatefulWidget> {
 }
 
 Future<List<List<double>>> _retrievedata(wmo, cycle) async {
-  var stringJson;
+  String stringJson;
   var jsonData;
+
   var urll =
       'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pres%2Ctemp%2Cpsal&platform_number=%22' +
           wmo +
           '%22&cycle_number=' +
           cycle +
           '&orderBy(%22pres%22)';
+
+  var client = http.Client();
   try {
     //CALLING makeRequest with await to wait for the answer
-    stringJson = await makeRequest(urll);
+    var response = await client.get(urll);
+    stringJson = response.body;
+
     jsonData = json.decode(stringJson);
-    return jsonData['table']['rows'];
+    List<List<double>> bigList = [];
+
+    for (var e in jsonData['table']['rows']) {
+      List<double> smallList = [];
+      for (var j in e) {
+        smallList.add(j.toDouble());
+      }
+      bigList.add(smallList);
+    }
+    return bigList;
   } on Exception catch (ex) {
     print('Erddap error: $ex');
     return [
       [0.0, 0.0, 0.0]
     ];
-  }
-}
-
-Future<String> makeRequest(urll) async {
-  var stringJson;
-  //HTTP CALL
-  var client = http.Client();
-  try {
-    var response = await client.get(urll);
-    stringJson = response.body;
-  } on Exception catch (ex) {
-    print('Erddap error: $ex');
   } finally {
     client.close();
   }
-  return stringJson;
 }

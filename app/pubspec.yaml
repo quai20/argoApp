@@ -31,6 +31,7 @@ dependencies:
   shared_preferences: ^0.5.7+1  
   dio: ^1.0.0
   fcharts: any
+  scidart: ^0.0.1-dev.6
 
 dev_dependencies:
   flutter_test:

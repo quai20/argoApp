@@ -30,8 +30,8 @@ class _MapWidgetState extends State<MapWidget> {
     LatLng center = args.center;
     DateTime displaydate = args.date;
     double zoom = args.zoom;
-    var maxZoom = 5.0;
-    var minZoom = 3.0;
+    var maxZoom = 6.0;
+    var minZoom = 2.0;
     //Must change zoom to reload map tiles... I don't know why yet, some caching issue
     if (zoom == maxZoom) {
       zoom -= 1;
@@ -59,10 +59,12 @@ class _MapWidgetState extends State<MapWidget> {
                 child: IconButton(
               icon: Icon(Icons.trip_origin),
               color: Colors.blue[800],
-              iconSize: 15.0,
+              iconSize: 10.0,
               onPressed: () {
-                Navigator.pushNamed(context, '/wmo',
-                    arguments: jsonData['table']['rows'][i]);
+                Navigator.pushNamed(context, '/wmo', arguments: {
+                  'data': jsonData['table']['rows'][i],
+                  'from': 'home'
+                });
               },
             )),
           ),
@@ -80,9 +82,9 @@ class _MapWidgetState extends State<MapWidget> {
             icon: Icon(Icons.calendar_today),
             onPressed: () {
               //CALENDAR HANDLING
-              var now = new DateTime.now();              
-              //THIS IS FOR SURE A SOURCE OF ERROR FOR AN INTERNATIONAL USE              
-              now = now.subtract(new Duration(days: 1));              
+              var now = new DateTime.now();
+              //THIS IS FOR SURE A SOURCE OF ERROR FOR AN INTERNATIONAL USE
+              now = now.subtract(new Duration(days: 1));
 
               var from = DateTime.now().subtract(new Duration(days: 10));
               DatePicker.showDatePicker(context,
@@ -129,7 +131,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   Future<String> definelanguage() async {
     var isonline = await SharedPreferencesHelper.getstatus();
-    var language = await SharedPreferencesHelper.getlanguage();    
+    var language = await SharedPreferencesHelper.getlanguage();
 
     if (isonline) {
       switch (language) {

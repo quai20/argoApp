@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Argo/pages/userpreference.dart';
+import 'package:fcharts/fcharts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+import 'package:scidart/numdart.dart';
 
 class Wmo extends StatefulWidget {
   @override
@@ -10,35 +14,54 @@ class Wmo extends StatefulWidget {
 class _WmoState extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
-    //Get wmo clicked from page context    
-    List wmodata = ModalRoute.of(context).settings.arguments;
-    print(Navigator.of(context));
+    //Get wmo clicked from page context
+    Map datapassed = ModalRoute.of(context).settings.arguments;
+    List wmodata = datapassed['data'];
+
+    List actionList;
+    if (datapassed['from'] == 'home') {
+      actionList = <Widget>[
+        //TRAJ icon to acess trajectory from a profile
+        IconButton(
+            icon: Icon(Icons.grain),
+            onPressed: () {
+              Navigator.pushNamed(context, '/search_result',
+                  arguments: wmodata[0].toString());
+            }),
+        //For the heart icon, we use a future builder because we're gonna load fleet list
+        //from user preferencies and compare our wmo to this list
+        FutureBuilder<List<String>>(
+            // get the wmofleetlist, saved in the user preferences
+            future: SharedPreferencesHelper.getwmofleet(),
+            initialData: List<String>(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+              //Here we call the build function with our fleet list and clicked wmo in input
+              return snapshot.hasData
+                  ? _buildIcon(snapshot.data, wmodata[0].toString())
+                  : Container();
+            }),
+      ];
+    } else {
+      actionList = <Widget>[
+        FutureBuilder<List<String>>(
+            // get the wmofleetlist, saved in the user preferences
+            future: SharedPreferencesHelper.getwmofleet(),
+            initialData: List<String>(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+              //Here we call the build function with our fleet list and clicked wmo in input
+              return snapshot.hasData
+                  ? _buildIcon(snapshot.data, wmodata[0].toString())
+                  : Container();
+            }),
+      ];
+    }
+
     //Lets build the page
     return Scaffold(
         appBar: AppBar(
-            title: Text("WMO : " + wmodata[0].toString()),
-            actions: <Widget>[
-              //TRAJ icon to acess trajectory from a profile              
-              IconButton(
-                  icon: Icon(Icons.grain),
-                  onPressed: () {                    
-                    Navigator.pushNamed(context, '/search_result',
-                          arguments: wmodata[0].toString());
-                  }),
-              //For the heart icon, we use a future builder because we're gonna load fleet list
-              //from user preferencies and compare our wmo to this list
-              FutureBuilder<List<String>>(
-                  // get the wmofleetlist, saved in the user preferences
-                  future: SharedPreferencesHelper.getwmofleet(),
-                  initialData: List<String>(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<String>> snapshot) {
-                    //Here we call the build function with our fleet list and clicked wmo in input
-                    return snapshot.hasData
-                        ? _buildIcon(snapshot.data, wmodata[0].toString())
-                        : Container();
-                  }),
-            ]),
+            title: Text("WMO : " + wmodata[0].toString()), actions: actionList),
         body: // Then we build the reste of the page with wmo info
             Center(
                 child: ListView(
@@ -70,22 +93,93 @@ class _WmoState extends State<StatefulWidget> {
               color: Colors.white,
               child: Center(child: Text('')),
             ),
-            // and we call an erddap image with cachednetworkimage
+            // and the charts
             Container(
-              height: 400,
-              child: CachedNetworkImage(
-                imageUrl:
-                    'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.png?temp,pres,psal&platform_number=%22' +
-                        wmodata[0].toString() +
-                        '%22&cycle_number=' +
-                        wmodata[2].toString() +
-                        '&.draw=linesAndMarkers&.marker=5%7C5&.color=0x000000&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff&.yRange=%7C%7Cfalse%7C',
-                placeholder: (context, url) => new CircularProgressIndicator(),
-                errorWidget: (context, url, error) => new Icon(Icons.error),
-              ),
-            )
+                height: 400,
+                child: FutureBuilder<List<List<double>>>(
+                    // retrieve data
+                    future: _retrievedata(
+                        wmodata[0].toString(), wmodata[2].toString()),
+                    initialData: [
+                      [0.0, 0.0, 0.0],
+                      [1.0, 1.0, 1.0]
+                    ],
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<List<double>>> snapshot) {
+                      //Here we call the build function
+                      return snapshot.hasData
+                          ? _buildChart(snapshot.data)
+                          : Container();
+                    }))
           ],
         )));
+  }
+
+  Widget _buildChart(points) {
+    var lims = getLims(points);
+    final yAxis = new ChartAxis<double>(
+        opposite: false,
+        span: DoubleSpan(lims[1], 0.0),
+        tickLabelFn: (x) => x.toString().split("\.")[0],
+        tickGenerator: FixedTickGenerator(
+            ticks: arange(start: 0, stop: lims[1].toInt(), step: 200)));
+    return LineChart(
+      chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
+      lines: [
+        // Temp line
+        new Line<List<double>, double, double>(
+          data: points,
+          xFn: (meas) => meas[1],
+          yFn: (meas) => meas[0],
+          xAxis: new ChartAxis(
+              tickLabelerStyle: new TextStyle(
+                  color: Colors.blue, fontWeight: FontWeight.bold),
+              paint: const PaintOptions.stroke(color: Colors.blue),
+              tickLabelFn: (x) => x.toStringAsFixed(1),
+              span: DoubleSpan(lims[2], lims[3]),
+              tickGenerator: FixedTickGenerator(
+                  ticks: linspace(lims[2], lims[3], num: 5))),
+          yAxis: yAxis,
+          marker: const MarkerOptions(
+              paint: const PaintOptions.fill(color: Colors.blue),
+              shape: MarkerShapes.circle,
+              size: 2.0),
+          stroke: const PaintOptions.stroke(
+              color: Colors.transparent, strokeWidth: 1.0),
+          legend: new LegendItem(
+            paint: const PaintOptions.fill(color: Colors.blue),
+            text: 'Temp (°C)',
+          ),
+        ),
+
+        // size line
+        new Line<List<double>, double, double>(
+          data: points,
+          xFn: (meas) => meas[2],
+          yFn: (meas) => meas[0],
+          xAxis: new ChartAxis(
+              offset: -350.0,
+              paint: const PaintOptions.stroke(color: Colors.green),
+              tickLabelFn: (x) => x.toStringAsFixed(1),
+              tickLabelerStyle: new TextStyle(
+                  color: Colors.green, fontWeight: FontWeight.bold),
+              span: DoubleSpan(lims[4], lims[5]),
+              tickGenerator: FixedTickGenerator(
+                  ticks: linspace(lims[4], lims[5], num: 5))),
+          yAxis: yAxis,
+          marker: const MarkerOptions(
+              paint: const PaintOptions.fill(color: Colors.green),
+              shape: MarkerShapes.circle,
+              size: 2.0),
+          stroke: const PaintOptions.stroke(
+              color: Colors.transparent, strokeWidth: 1.0),
+          legend: new LegendItem(
+            paint: const PaintOptions.fill(color: Colors.green),
+            text: 'Psal (/)',
+          ),
+        ),
+      ],
+    );
   }
 
   //THis is the function that builds the favorite icon with wmo and fleet list iin input
@@ -108,4 +202,72 @@ class _WmoState extends State<StatefulWidget> {
           });
     }
   }
+}
+
+Future<List<List<double>>> _retrievedata(wmo, cycle) async {
+  String stringJson;
+  var jsonData;
+
+  var urll =
+      'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pres%2Ctemp%2Cpsal&platform_number=%22' +
+          wmo +
+          '%22&cycle_number=' +
+          cycle +
+          '&orderBy(%22pres%22)';
+  //print(urll);
+  var client = http.Client();
+  try {
+    //CALLING makeRequest with await to wait for the answer
+    var response = await client.get(urll);
+    stringJson = response.body;
+
+    jsonData = json.decode(stringJson);
+    List<List<double>> bigList = [];
+
+    for (var e in jsonData['table']['rows']) {
+      List<double> smallList = [];
+      for (var j in e) {
+        smallList.add(j.toDouble());
+      }
+      bigList.add(smallList);
+    }
+    return bigList;
+  } on Exception catch (ex) {
+    print('Erddap error: $ex');
+    return [
+      [0.0, 0.0, 0.0]
+    ];
+  } finally {
+    client.close();
+  }
+}
+
+List<double> getLims(List<List<double>> points) {
+  var lims = [0.0, 0.0, 1000.0, 0.0, 1000.0, 0.0];
+
+  for (var i = 0; i < points.length; i++) {
+    //PRES
+    //if (points[i][0] < lims[0]) {
+    //  lims[0] = points[i][0];
+    //}
+    if (points[i][0] > lims[1]) {
+      lims[1] = points[i][0];
+    }
+    //TEMP
+    if (points[i][1] < lims[2]) {
+      lims[2] = points[i][1];
+    }
+    if (points[i][1] > lims[3]) {
+      lims[3] = points[i][1];
+    }
+    //PSAL
+    if (points[i][2] < lims[4]) {
+      lims[4] = points[i][2];
+    }
+    if (points[i][2] > lims[5]) {
+      lims[5] = points[i][2];
+    }
+  }
+  //print(lims);
+  return lims;
 }

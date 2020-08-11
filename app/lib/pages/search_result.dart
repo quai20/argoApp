@@ -13,7 +13,6 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResultState extends State<StatefulWidget> {
-
   @override
   Widget build(BuildContext context) {
     //Get wmo searched from context page
@@ -81,23 +80,25 @@ class _SearchResultState extends State<StatefulWidget> {
     var _line = <LatLng>[];
     var latitude;
     var longitude;
-    
+
     //TURNING DATA INTO MARKERS
     for (var i = 0; i < wmoinfo.length; i += 1) {
       latitude = wmoinfo[i][5];
-      longitude = wmoinfo[i][6];      
+      longitude = wmoinfo[i][6];
       //TRY CATCH IN CASE OF BAD LAT/LON
       try {
         _line.add(LatLng(latitude, longitude));
-        _markers.add(Marker(          
-          point: new LatLng(latitude, longitude),         
-          builder: (ctx) => Container(                                   
-                child: IconButton(                                
+        _markers.add(
+          Marker(
+            point: new LatLng(latitude, longitude),
+            builder: (ctx) => Container(
+                child: IconButton(
               icon: Icon(Icons.lens),
               color: Colors.blue[800],
               iconSize: 15.0,
               onPressed: () {
-                Navigator.pushNamed(context, '/wmor', arguments: wmoinfo[i]);
+                Navigator.pushNamed(context, '/wmo',
+                    arguments: {'data': wmoinfo[i], 'from': 'search'});
               },
             )),
             anchorPos: AnchorPos.align(AnchorAlign.center),
@@ -109,20 +110,25 @@ class _SearchResultState extends State<StatefulWidget> {
     }
 
     //Let's rebuild the last marker in red (change color inside the for loop doesn't seems to work because of the async)
-    _markers.add(Marker(                              
-          point: new LatLng( wmoinfo[wmoinfo.length-1][5], wmoinfo[wmoinfo.length-1][6]),          
-          builder: (ctx) => Container(
-                child: IconButton(
-              icon: Icon(Icons.lens),
-              color: Colors.red,
-              iconSize: 15.0,                            
-              onPressed: () {
-                Navigator.pushNamed(context, '/wmo', arguments: wmoinfo[wmoinfo.length-1]);
-              },
-            )),
-            anchorPos: AnchorPos.align(AnchorAlign.center),
-          ),
-        );
+    _markers.add(
+      Marker(
+        point: new LatLng(
+            wmoinfo[wmoinfo.length - 1][5], wmoinfo[wmoinfo.length - 1][6]),
+        builder: (ctx) => Container(
+            child: IconButton(
+          icon: Icon(Icons.lens),
+          color: Colors.red,
+          iconSize: 15.0,
+          onPressed: () {
+            Navigator.pushNamed(context, '/wmo', arguments: {
+              'data': wmoinfo[wmoinfo.length - 1],
+              'from': 'search'
+            });
+          },
+        )),
+        anchorPos: AnchorPos.align(AnchorAlign.center),
+      ),
+    );
 
     return FlutterMap(
       options: new MapOptions(
@@ -133,11 +139,11 @@ class _SearchResultState extends State<StatefulWidget> {
       ),
       layers: [
         new TileLayerOptions(
-            //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            urlTemplate:
-                "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-            subdomains: ['a', 'b', 'c'],
-            ),        
+          //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          urlTemplate:
+              "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+          subdomains: ['a', 'b', 'c'],
+        ),
         new PolylineLayerOptions(
           polylines: [
             Polyline(points: _line, strokeWidth: 4.0, color: Colors.blue[800]),

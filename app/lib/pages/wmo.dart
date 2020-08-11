@@ -16,6 +16,8 @@ class _WmoState extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     //Get wmo clicked from page context
     Map datapassed = ModalRoute.of(context).settings.arguments;
+
+    List position = datapassed['position'];
     List wmodata = datapassed['data'];
 
     List actionList;
@@ -61,7 +63,8 @@ class _WmoState extends State<StatefulWidget> {
     //Lets build the page
     return Scaffold(
         appBar: AppBar(
-            title: Text("WMO : " + wmodata[0].toString()), actions: actionList),
+            title: SelectableText("WMO : " + wmodata[0].toString()),
+            actions: actionList),
         body: // Then we build the reste of the page with wmo info
             Center(
                 child: ListView(
@@ -70,23 +73,31 @@ class _WmoState extends State<StatefulWidget> {
             Container(
               height: 40,
               color: Colors.red[200],
-              child: Center(child: Text('PI name : ' + wmodata[1])),
+              child: Center(child: SelectableText('PI name : ' + wmodata[1])),
             ),
             Container(
               height: 40,
               color: Colors.amber[200],
               child: Center(
-                  child: Text('Cycle number : ' + wmodata[2].toString())),
+                  child: SelectableText('Cycle number : ' +
+                      wmodata[2].toString() +
+                      '  (' +
+                      position[0].toStringAsFixed(2) +
+                      '/' +
+                      position[1].toStringAsFixed(2) +
+                      ')')),
             ),
             Container(
               height: 40,
               color: Colors.cyan[200],
-              child: Center(child: Text('Float type : ' + wmodata[3])),
+              child:
+                  Center(child: SelectableText('Float type : ' + wmodata[3])),
             ),
             Container(
               height: 40,
               color: Colors.green[200],
-              child: Center(child: Text('Profile date : ' + wmodata[4])),
+              child:
+                  Center(child: SelectableText('Profile date : ' + wmodata[4])),
             ),
             Container(
               height: 10,

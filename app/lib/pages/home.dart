@@ -63,7 +63,8 @@ class _MapWidgetState extends State<MapWidget> {
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
                   'data': jsonData['table']['rows'][i],
-                  'from': 'home'
+                  'from': 'home',
+                  'position': [latitude, longitude]
                 });
               },
             )),

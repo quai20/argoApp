@@ -97,8 +97,11 @@ class _SearchResultState extends State<StatefulWidget> {
               color: Colors.blue[800],
               iconSize: 15.0,
               onPressed: () {
-                Navigator.pushNamed(context, '/wmo',
-                    arguments: {'data': wmoinfo[i], 'from': 'search'});
+                Navigator.pushNamed(context, '/wmo', arguments: {
+                  'data': wmoinfo[i],
+                  'from': 'search',
+                  'position': [latitude, longitude]
+                });
               },
             )),
             anchorPos: AnchorPos.align(AnchorAlign.center),

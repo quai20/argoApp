@@ -18,7 +18,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void initState() {
     super.initState();
-    mapController = MapController();
+    mapController = MapController();  
   }
 
   //BUILD

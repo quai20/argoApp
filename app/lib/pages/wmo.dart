@@ -128,12 +128,17 @@ class _WmoState extends State<StatefulWidget> {
 
   Widget _buildChart(points) {
     var lims = getLims(points);
+    var step = lims[1].toInt()/5;    
+    if(step>150){step=200;}
+    else if(step>50){step=50;}
+    else {step=20;}
+
     final yAxis = new ChartAxis<double>(
         opposite: false,
         span: DoubleSpan(lims[1], 0.0),
         tickLabelFn: (x) => x.toString().split("\.")[0],
         tickGenerator: FixedTickGenerator(
-            ticks: arange(start: 0, stop: lims[1].toInt(), step: 200)));
+            ticks: arange(start: 0, stop: lims[1].toInt(), step: step.toInt())));
     return LineChart(
       chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
       lines: [

@@ -18,7 +18,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void initState() {
     super.initState();
-    mapController = MapController();  
+    mapController = MapController();
   }
 
   //BUILD
@@ -26,7 +26,7 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     //GETTING DATA FROM CONTEXT
     LoadingScreenArguments args = ModalRoute.of(context).settings.arguments;
-    Map jsonData = args.jsonData;
+    List jsonData = args.jsonData;
     LatLng center = args.center;
     DateTime displaydate = args.date;
     double zoom = args.zoom;
@@ -44,9 +44,9 @@ class _MapWidgetState extends State<MapWidget> {
     }
 
     //TURNING DATA INTO MARKERS
-    for (var i = 0; i < jsonData['table']['rows'].length; i += 1) {
-      var latitude = jsonData['table']['rows'][i][5];
-      var longitude = jsonData['table']['rows'][i][6];
+    for (var i = 0; i < jsonData.length; i += 1) {
+      var latitude = jsonData[i]['coordinate']['lat'];
+      var longitude = jsonData[i]['coordinate']['lon'];
       //TRY CATCH IN CASE OF BAD LAT/LON
       try {
         _markers.add(Marker(
@@ -62,7 +62,7 @@ class _MapWidgetState extends State<MapWidget> {
               iconSize: 10.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
-                  'data': jsonData['table']['rows'][i],
+                  'data': jsonData[i],
                   'from': 'home',
                   'position': [latitude, longitude]
                 });
@@ -87,7 +87,7 @@ class _MapWidgetState extends State<MapWidget> {
               //THIS IS FOR SURE A SOURCE OF ERROR FOR AN INTERNATIONAL USE
               now = now.subtract(new Duration(days: 1));
 
-              var from = DateTime.now().subtract(new Duration(days: 10));
+              var from = DateTime.utc(2000, 1, 1);
               DatePicker.showDatePicker(context,
                   showTitleActions: true,
                   minTime: from,

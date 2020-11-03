@@ -2,7 +2,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:latlong/latlong.dart';
 
 class SharedPreferencesHelper {
-
   //CONNECTION STATUS
   // Instantiation of the SharedPreferences library
   static final String _kstatus = "isconnected";
@@ -19,8 +18,7 @@ class SharedPreferencesHelper {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setBool(_kstatus, value);
   }
-  
-  
+
   // LANGUAGE
   // Instantiation of the SharedPreferences library
   static final String _klanguage = "userlanguage";
@@ -53,11 +51,10 @@ class SharedPreferencesHelper {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setStringList(_kwmofleet, value);
   }
-
 }
 
 class LoadingScreenArguments {
-  final Map jsonData;
+  final List jsonData;
   final LatLng center;
   final double zoom;
   final DateTime date;

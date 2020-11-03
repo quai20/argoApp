@@ -24,14 +24,17 @@ class _LoadingState extends State<Loading> {
     try {
       //CALLING makeRequest with await to wait for the answer
       stringJson = await makeRequest(targetdate);
+      print("request succeeded");
       jsonData = json.decode(stringJson);
+      print(jsonData);
     } on Exception catch (ex) {
-      print('Server error: $ex');
+      print('request failed: $ex');
       //IF SERVER ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
       stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       jsonData = json.decode(stringJson);
     }
+
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view
     //also removing this page from the app tree, it's useless after loading
     Navigator.of(context).pushNamedAndRemoveUntil(
@@ -84,45 +87,48 @@ class _LoadingState extends State<Loading> {
     var APIurl =
         'https://dataselection.euro-argo.eu/api/find-by-search-filtred';
 
-    var StringJson = '{"criteriaList":[{"field":"startDate","values":[{"name":"' +
+    var StringJson = r'{"criteriaList":[{"field":"startDate","values":[{"name":"' +
         syear +
-        '-' +
+        r'-' +
         smonth +
-        '-' +
+        r'-' +
         sday +
-        'T00:00:00.000+0000","code":"' +
+        r'T00:00:00.000+0000","code":"' +
         syear +
-        '-' +
+        r'-' +
         smonth +
-        '-' +
+        r'-' +
         sday +
-        'T00:00:00.000+0000","n":0},{"name":"' +
+        r'T00:00:00.000+0000","n":0},{"name":"' +
         syeara +
-        '-' +
+        r'-' +
         smontha +
-        '-' +
+        r'-' +
         sdaya +
-        'T00:00:00.000+0000","code":"' +
+        r'T00:00:00.000+0000","code":"' +
         syeara +
-        '-' +
+        r'-' +
         smontha +
-        '-' +
+        r'-' +
         sdaya +
-        'T00:00:00.000+0000","n":0}],' +
-        '"types":["DATE"]},{"field":"globalGeoShapeField","values":[{"code":{"type":"POLYGON",' +
-        '"coordinates":[[[-180,-90.0],[-180,90.0],[180,90.0],[180,-90.0],[-180,-90.0]]]},"name":"","n":0}],' +
-        '"types":["GEOGRAPHIC"],"options":[]},{"field":"deploymentYear","values":[],"types":["AUTOCOMPLETE","FACET"],"options":["SORTED_VALTXT_DESC"],' +
-        '"sortPriority":0,"order":"DESC"}],"pagination":{"page":1,"size":10000,"isPaginated":true},"bboxParams":{"latTopLeft":90.0,"lonTopLeft":-180,' +
-        '"latBottomRight":-90.0,"lonBottomRight":180,"zoom":5},"languageEnum":"en"}';
+        r'T00:00:00.000+0000","n":0}],' +
+        r'"types":["DATE"]},{"field":"globalGeoShapeField","values":[{"code":"{\"type\":\"POLYGON\",' +
+        r'\"coordinates\":[[[-180,-90.0],[-180,90.0],[180,90.0],[180,-90.0],[-180,-90.0]]]}\"","name":"","n":0}],' +
+        r'"types":["GEOGRAPHIC"],"options":[]}],"pagination":{"page":1,"size":10000,"isPaginated":true},"bboxParams":{"latTopLeft":90.0,"lonTopLeft":-180,' +
+        r'"latBottomRight":-90.0,"lonBottomRight":180,"zoom":5},"languageEnum":"en"}';
 
-    print(StringJson);
+    //print(StringJson);
     var data = jsonDecode(StringJson);
 
     //HTTP CALL
     var client = http.Client();
     try {
-      var response = await client.post(APIurl, body: data);
+      //var response = await client.post(APIurl, body: data);
+      var response = await client.post(APIurl,
+          headers: {'Content-type': 'application/json'},
+          body: json.encode(data));
       SharedPreferencesHelper.setstatus(true);
+      print(response.statusCode);
       return response.body;
     } on Exception catch (ex) {
       print('Server error: $ex');

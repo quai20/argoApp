@@ -18,7 +18,7 @@ class _WmoState extends State<StatefulWidget> {
     Map datapassed = ModalRoute.of(context).settings.arguments;
 
     List position = datapassed['position'];
-    List wmodata = datapassed['data'];
+    Map wmodata = datapassed['data'];
 
     List actionList;
     if (datapassed['from'] == 'home') {
@@ -63,7 +63,8 @@ class _WmoState extends State<StatefulWidget> {
     //Lets build the page
     return Scaffold(
         appBar: AppBar(
-            title: SelectableText("WMO : " + wmodata[0].toString()),
+            title:
+                SelectableText("WMO : " + wmodata['platformCode'].toString()),
             actions: actionList),
         body: // Then we build the reste of the page with wmo info
             Center(
@@ -73,14 +74,14 @@ class _WmoState extends State<StatefulWidget> {
             Container(
               height: 40,
               color: Colors.red[200],
-              child: Center(child: SelectableText('PI name : ' + wmodata[1])),
+              child: Center(child: SelectableText('PI name : ' + '')),
             ),
             Container(
               height: 40,
               color: Colors.amber[200],
               child: Center(
                   child: SelectableText('Cycle number : ' +
-                      wmodata[2].toString() +
+                      wmodata['cvNumber'].toString() +
                       '  (' +
                       position[0].toStringAsFixed(2) +
                       '/' +
@@ -90,14 +91,12 @@ class _WmoState extends State<StatefulWidget> {
             Container(
               height: 40,
               color: Colors.cyan[200],
-              child:
-                  Center(child: SelectableText('Float type : ' + wmodata[3])),
+              child: Center(child: SelectableText('Float type : ' + '')),
             ),
             Container(
               height: 40,
               color: Colors.green[200],
-              child:
-                  Center(child: SelectableText('Profile date : ' + wmodata[4])),
+              child: Center(child: SelectableText('Profile date : ' + '')),
             ),
             Container(
               height: 10,
@@ -109,8 +108,8 @@ class _WmoState extends State<StatefulWidget> {
                 height: 400,
                 child: FutureBuilder<List<List<double>>>(
                     // retrieve data
-                    future: _retrievedata(
-                        wmodata[0].toString(), wmodata[2].toString()),
+                    future: _retrievedata(wmodata['platformCode'].toString(),
+                        wmodata['cvNumber'].toString()),
                     initialData: [
                       [0.0, 0.0, 0.0],
                       [1.0, 1.0, 1.0]
@@ -199,7 +198,7 @@ class _WmoState extends State<StatefulWidget> {
     );
   }
 
-  //THis is the function that builds the favorite icon with wmo and fleet list iin input
+  //This is the function that builds the favorite icon with wmo and fleet list iin input
   Widget _buildIcon(List<String> wmolist, String wmo) {
     if (wmolist.contains(wmo)) {
       return IconButton(
@@ -225,13 +224,14 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
   String stringJson;
   var jsonData;
 
+  //This is based on erddap ifremer server
   var urll =
       'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pres%2Ctemp%2Cpsal&platform_number=%22' +
           wmo +
           '%22&cycle_number=' +
           cycle +
           '&orderBy(%22pres%22)';
-  //print(urll);
+  print(urll);
   var client = http.Client();
   try {
     //CALLING makeRequest with await to wait for the answer

@@ -111,7 +111,7 @@ class _WmoState extends State<StatefulWidget> {
                     future: _retrievedata(wmodata['platformCode'].toString(),
                         wmodata['cvNumber'].toString()),
                     initialData: [
-                      [0.0, 0.0, 0.0],
+                      [0.0, 1000.0, 2000.0],
                       [1.0, 1.0, 1.0]
                     ],
                     builder: (BuildContext context,
@@ -127,12 +127,15 @@ class _WmoState extends State<StatefulWidget> {
 
   Widget _buildChart(points) {
     var lims = getLims(points);
-    int step = 200;
-    if (lims[1] < 200) {
-      step = 50;
-    } else if (lims[1] < 50) {
-      step = 20;
-    }
+    int step = (lims[1] / 6).ceil();
+
+    // int step = 200;
+    // if (lims[1] < 200) {
+    //   step = 50;
+    // } else if (lims[1] < 50) {
+    //   step = 20;
+    // }
+
     final yAxis = new ChartAxis<double>(
         opposite: false,
         span: DoubleSpan(lims[1], 0.0),
@@ -231,7 +234,7 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
           '%22&cycle_number=' +
           cycle +
           '&orderBy(%22pres%22)';
-  print(urll);
+  //print(urll);
   var client = http.Client();
   try {
     //CALLING makeRequest with await to wait for the answer
@@ -260,7 +263,7 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
 }
 
 List<double> getLims(List<List<double>> points) {
-  var lims = [0.0, 0.0, 1000.0, 0.0, 1000.0, 0.0];
+  var lims = [0.0, 10.0, 1000.0, 0.0, 1000.0, 0.0];
 
   for (var i = 0; i < points.length; i++) {
     //PRES

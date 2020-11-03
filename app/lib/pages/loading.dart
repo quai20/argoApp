@@ -26,8 +26,8 @@ class _LoadingState extends State<Loading> {
       stringJson = await makeRequest(targetdate);
       jsonData = json.decode(stringJson);
     } on Exception catch (ex) {
-      print('Erddap error: $ex');
-      //IF ERDDAP ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
+      print('Server error: $ex');
+      //IF SERVER ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
       stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       jsonData = json.decode(stringJson);
@@ -42,16 +42,26 @@ class _LoadingState extends State<Loading> {
 
   //makeRequest has to return Future (and be async) to avoid getting stuck during http call
   Future<String> makeRequest(targetdate) async {
+    var tomorrow = targetdate.add(new Duration(days: 1));
+
     var sday = '';
     var smonth = '';
     var syear = '';
+    var sdaya = '';
+    var smontha = '';
+    var syeara = '';
 
     var day = targetdate.day;
-
     if (day < 10) {
       sday = '0' + day.toString();
     } else {
       sday = day.toString();
+    }
+    var daya = tomorrow.day;
+    if (daya < 10) {
+      sdaya = '0' + daya.toString();
+    } else {
+      sdaya = daya.toString();
     }
 
     var month = targetdate.month;
@@ -60,27 +70,62 @@ class _LoadingState extends State<Loading> {
     } else {
       smonth = month.toString();
     }
+    var montha = tomorrow.month;
+    if (montha < 10) {
+      smontha = '0' + montha.toString();
+    } else {
+      smontha = montha.toString();
+    }
 
     syear = (targetdate.year).toString();
+    syeara = (tomorrow.year).toString();
 
-    // Erddap request send time out too often, going server side...
-    var urll = 'http://collab.umr-lops.fr/app/divaa/data/json/' +
+    //Elastic-search index api based
+    var APIurl =
+        'https://dataselection.euro-argo.eu/api/find-by-search-filtred';
+
+    var StringJson = '{"criteriaList":[{"field":"startDate","values":[{"name":"' +
         syear +
         '-' +
         smonth +
         '-' +
         sday +
-        '.json';
-    //print(urll);
+        'T00:00:00.000+0000","code":"' +
+        syear +
+        '-' +
+        smonth +
+        '-' +
+        sday +
+        'T00:00:00.000+0000","n":0},{"name":"' +
+        syeara +
+        '-' +
+        smontha +
+        '-' +
+        sdaya +
+        'T00:00:00.000+0000","code":"' +
+        syeara +
+        '-' +
+        smontha +
+        '-' +
+        sdaya +
+        'T00:00:00.000+0000","n":0}],' +
+        '"types":["DATE"]},{"field":"globalGeoShapeField","values":[{"code":{"type":"POLYGON",' +
+        '"coordinates":[[[-180,-90.0],[-180,90.0],[180,90.0],[180,-90.0],[-180,-90.0]]]},"name":"","n":0}],' +
+        '"types":["GEOGRAPHIC"],"options":[]},{"field":"deploymentYear","values":[],"types":["AUTOCOMPLETE","FACET"],"options":["SORTED_VALTXT_DESC"],' +
+        '"sortPriority":0,"order":"DESC"}],"pagination":{"page":1,"size":10000,"isPaginated":true},"bboxParams":{"latTopLeft":90.0,"lonTopLeft":-180,' +
+        '"latBottomRight":-90.0,"lonBottomRight":180,"zoom":5},"languageEnum":"en"}';
+
+    print(StringJson);
+    var data = jsonDecode(StringJson);
 
     //HTTP CALL
     var client = http.Client();
     try {
-      var response = await client.get(urll);
+      var response = await client.post(APIurl, body: data);
       SharedPreferencesHelper.setstatus(true);
       return response.body;
     } on Exception catch (ex) {
-      print('Erddap error: $ex');
+      print('Server error: $ex');
       //load test dataset if request fails, not sure if it's a good idea
       var stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');

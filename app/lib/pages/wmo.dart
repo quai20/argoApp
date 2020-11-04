@@ -72,37 +72,20 @@ class _WmoState extends State<StatefulWidget> {
           padding: const EdgeInsets.all(8),
           children: <Widget>[
             Container(
-              height: 40,
-              color: Colors.red[200],
-              child: Center(child: SelectableText('PI name : ' + '')),
-            ),
-            Container(
-              height: 40,
-              color: Colors.amber[200],
-              child: Center(
-                  child: SelectableText('Cycle number : ' +
-                      wmodata['cvNumber'].toString() +
-                      '  (' +
-                      position[0].toStringAsFixed(2) +
-                      '/' +
-                      position[1].toStringAsFixed(2) +
-                      ')')),
-            ),
-            Container(
-              height: 40,
-              color: Colors.cyan[200],
-              child: Center(child: SelectableText('Float type : ' + '')),
-            ),
-            Container(
-              height: 40,
-              color: Colors.green[200],
-              child: Center(child: SelectableText('Profile date : ' + '')),
-            ),
-            Container(
-              height: 10,
-              color: Colors.white,
-              child: Center(child: Text('')),
-            ),
+                height: 170,
+                child: FutureBuilder<List>(
+                    // retrieve data
+                    future: _retrievemetadata(
+                        wmodata['platformCode'].toString(),
+                        wmodata['cvNumber'].toString()),
+                    initialData: ["", "", "", 0, 0, 0, ""],
+                    builder:
+                        (BuildContext context, AsyncSnapshot<List> snapshot) {
+                      //Here we call the build function
+                      return snapshot.hasData
+                          ? _buildMeta(snapshot.data)
+                          : Container();
+                    })),
             // and the charts
             Container(
                 height: 400,
@@ -125,16 +108,48 @@ class _WmoState extends State<StatefulWidget> {
         )));
   }
 
+  Widget _buildMeta(metalist) {
+    return ListView(padding: const EdgeInsets.all(8), children: <Widget>[
+      Container(
+        height: 40,
+        color: Colors.red[200],
+        child: Center(
+            child: SelectableText(
+                'PI name : ' + metalist[0] + ' (' + metalist[1] + ')')),
+      ),
+      Container(
+        height: 40,
+        color: Colors.amber[200],
+        child: Center(
+            child: SelectableText('Cycle number : ' +
+                metalist[3].toString() +
+                '  (' +
+                metalist[4].toStringAsFixed(2) +
+                '/' +
+                metalist[5].toStringAsFixed(2) +
+                ')')),
+      ),
+      Container(
+        height: 40,
+        color: Colors.cyan[200],
+        child: Center(child: SelectableText('Float type : ' + metalist[2])),
+      ),
+      Container(
+        height: 40,
+        color: Colors.green[200],
+        child: Center(child: SelectableText('Profile date : ' + metalist[6])),
+      ),
+      Container(
+        height: 20,
+        color: Colors.white,
+        child: Center(child: Text('')),
+      )
+    ]);
+  }
+
   Widget _buildChart(points) {
     var lims = getLims(points);
     int step = (lims[1] / 6).ceil();
-
-    // int step = 200;
-    // if (lims[1] < 200) {
-    //   step = 50;
-    // } else if (lims[1] < 50) {
-    //   step = 20;
-    // }
 
     final yAxis = new ChartAxis<double>(
         opposite: false,
@@ -257,6 +272,32 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
     return [
       [0.0, 0.0, 0.0]
     ];
+  } finally {
+    client.close();
+  }
+}
+
+Future<List> _retrievemetadata(wmo, cycle) async {
+  String stringJson;
+  var jsonData;
+
+  //This is based on erddap ifremer server
+  var urll =
+      'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pi_name%2Cdata_center%2Cplatform_type%2Ccycle_number%2Clongitude%2Clatitude%2Ctime&platform_number=%22' +
+          wmo +
+          '%22&cycle_number=' +
+          cycle;
+  //print(urll);
+  var client = http.Client();
+  try {
+    //CALLING makeRequest with await to wait for the answer
+    var response = await client.get(urll);
+    stringJson = response.body;
+    jsonData = json.decode(stringJson);
+    return jsonData['table']['rows'][0];
+  } on Exception catch (ex) {
+    print('Erddap error: $ex');
+    return ["", "", "", 0, 0, 0, ""];
   } finally {
     client.close();
   }

@@ -26,7 +26,6 @@ class _LoadingState extends State<Loading> {
       stringJson = await makeRequest(targetdate);
       print("request succeeded");
       jsonData = json.decode(stringJson);
-      print(jsonData);
     } on Exception catch (ex) {
       print('request failed: $ex');
       //IF SERVER ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
@@ -128,7 +127,6 @@ class _LoadingState extends State<Loading> {
           headers: {'Content-type': 'application/json'},
           body: json.encode(data));
       SharedPreferencesHelper.setstatus(true);
-      print(response.statusCode);
       return response.body;
     } on Exception catch (ex) {
       print('Server error: $ex');

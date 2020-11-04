@@ -28,7 +28,7 @@ class _WmoState extends State<StatefulWidget> {
             icon: Icon(Icons.grain),
             onPressed: () {
               Navigator.pushNamed(context, '/search_result',
-                  arguments: wmodata[0].toString());
+                  arguments: wmodata['platformCode'].toString());
             }),
         //For the heart icon, we use a future builder because we're gonna load fleet list
         //from user preferencies and compare our wmo to this list
@@ -40,7 +40,8 @@ class _WmoState extends State<StatefulWidget> {
                 (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
               //Here we call the build function with our fleet list and clicked wmo in input
               return snapshot.hasData
-                  ? _buildIcon(snapshot.data, wmodata[0].toString())
+                  ? _buildIcon(
+                      snapshot.data, wmodata['platformCode'].toString())
                   : Container();
             }),
       ];
@@ -54,7 +55,8 @@ class _WmoState extends State<StatefulWidget> {
                 (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
               //Here we call the build function with our fleet list and clicked wmo in input
               return snapshot.hasData
-                  ? _buildIcon(snapshot.data, wmodata[0].toString())
+                  ? _buildIcon(
+                      snapshot.data, wmodata['platformCode'].toString())
                   : Container();
             }),
       ];

@@ -75,7 +75,6 @@ class _SearchState extends State<Search> {
 
   //building the list
   Widget _buildList() {
-    print(filteredwmos);
     if (_searchText.isNotEmpty) {
       prevfilteredwmos = filteredwmos;
       List tempList = new List();

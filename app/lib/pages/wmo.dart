@@ -160,7 +160,7 @@ class _WmoState extends State<StatefulWidget> {
         tickGenerator: FixedTickGenerator(
             ticks: arange(start: 0, stop: lims[1].toInt(), step: step)));
     return LineChart(
-      chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
+      chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 30.0, 30.0),
       lines: [
         // Temp line
         new Line<List<double>, double, double>(

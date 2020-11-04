@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:Argo/pages/userpreference.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
 class Search extends StatefulWidget {
   @override
@@ -72,6 +75,7 @@ class _SearchState extends State<Search> {
 
   //building the list
   Widget _buildList() {
+    print(filteredwmos);
     if (_searchText.isNotEmpty) {
       prevfilteredwmos = filteredwmos;
       List tempList = new List();
@@ -132,16 +136,37 @@ class _SearchState extends State<Search> {
 
   //function that retrieve wmolist from server (dio call)
   void _getwmos() async {
-    final response = await dio
-        .get('http://collab.umr-lops.fr/app/divaa/data/json/wmolist.json');
-    //Create a new list from json, so that _filter can work with
-    List tempList = new List();
-    for (int i = 0; i < response.data['wmolist'].length; i++) {
-      tempList.add(response.data['wmolist'][i]);
+    //final response = await dio
+    //    .get('http://collab.umr-lops.fr/app/divaa/data/json/wmolist.json');
+
+    String stringJson;
+    var jsonData;
+    var response;
+
+    //This is based on meta data api fleetmonitoring
+    var APIurl =
+        'https://fleetmonitoring.euro-argo.eu/platformCodes/multi-lines-search';
+    //HTTP POST
+    var client = http.Client();
+    try {
+      response = await client.post(APIurl,
+          headers: {'Content-type': 'application/json'}, body: json.encode([]));
+    } on Exception catch (ex) {
+      print('Server error: $ex');
+    } finally {
+      client.close();
     }
+    print(json.decode(response.body));
+
+    //Create a new list from json, so that _filter can work with
+    //List tempList = new List();
+    //for (int i = 0; i < response.data['wmolist'].length; i++) {
+    //  tempList.add(response.data['wmolist'][i]);
+    //}
+
     //The widget has a new state (= a new list to search in)
     setState(() {
-      wmos = tempList;
+      wmos = json.decode(response.body);
       filteredwmos = wmos;
     });
   }

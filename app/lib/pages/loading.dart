@@ -122,7 +122,6 @@ class _LoadingState extends State<Loading> {
     //HTTP CALL
     var client = http.Client();
     try {
-      //var response = await client.post(APIurl, body: data);
       var response = await client.post(APIurl,
           headers: {'Content-type': 'application/json'},
           body: json.encode(data));

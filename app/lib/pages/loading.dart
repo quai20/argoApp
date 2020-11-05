@@ -24,14 +24,16 @@ class _LoadingState extends State<Loading> {
     try {
       //CALLING makeRequest with await to wait for the answer
       stringJson = await makeRequest(targetdate);
+      print("request succeeded");
       jsonData = json.decode(stringJson);
     } on Exception catch (ex) {
-      print('Erddap error: $ex');
-      //IF ERDDAP ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
+      print('request failed: $ex');
+      //IF SERVER ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
       stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       jsonData = json.decode(stringJson);
     }
+
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view
     //also removing this page from the app tree, it's useless after loading
     Navigator.of(context).pushNamedAndRemoveUntil(
@@ -42,16 +44,26 @@ class _LoadingState extends State<Loading> {
 
   //makeRequest has to return Future (and be async) to avoid getting stuck during http call
   Future<String> makeRequest(targetdate) async {
+    var tomorrow = targetdate.add(new Duration(days: 1));
+
     var sday = '';
     var smonth = '';
     var syear = '';
+    var sdaya = '';
+    var smontha = '';
+    var syeara = '';
 
     var day = targetdate.day;
-
     if (day < 10) {
       sday = '0' + day.toString();
     } else {
       sday = day.toString();
+    }
+    var daya = tomorrow.day;
+    if (daya < 10) {
+      sdaya = '0' + daya.toString();
+    } else {
+      sdaya = daya.toString();
     }
 
     var month = targetdate.month;
@@ -60,27 +72,63 @@ class _LoadingState extends State<Loading> {
     } else {
       smonth = month.toString();
     }
+    var montha = tomorrow.month;
+    if (montha < 10) {
+      smontha = '0' + montha.toString();
+    } else {
+      smontha = montha.toString();
+    }
 
     syear = (targetdate.year).toString();
+    syeara = (tomorrow.year).toString();
 
-    // Erddap request send time out too often, going server side...
-    var urll = 'http://collab.umr-lops.fr/app/divaa/data/json/' +
+    //Elastic-search index api based
+    var APIurl =
+        'https://dataselection.euro-argo.eu/api/find-by-search-filtred';
+
+    var StringJson = r'{"criteriaList":[{"field":"startDate","values":[{"name":"' +
         syear +
-        '-' +
+        r'-' +
         smonth +
-        '-' +
+        r'-' +
         sday +
-        '.json';
-    //print(urll);
+        r'T00:00:00.000+0000","code":"' +
+        syear +
+        r'-' +
+        smonth +
+        r'-' +
+        sday +
+        r'T00:00:00.000+0000","n":0},{"name":"' +
+        syeara +
+        r'-' +
+        smontha +
+        r'-' +
+        sdaya +
+        r'T00:00:00.000+0000","code":"' +
+        syeara +
+        r'-' +
+        smontha +
+        r'-' +
+        sdaya +
+        r'T00:00:00.000+0000","n":0}],' +
+        r'"types":["DATE"]},{"field":"globalGeoShapeField","values":[{"code":"{\"type\":\"POLYGON\",' +
+        r'\"coordinates\":[[[-180,-90.0],[-180,90.0],[180,90.0],[180,-90.0],[-180,-90.0]]]}\"","name":"","n":0}],' +
+        r'"types":["GEOGRAPHIC"],"options":[]}],"pagination":{"page":1,"size":10000,"isPaginated":true},"bboxParams":{"latTopLeft":90.0,"lonTopLeft":-180,' +
+        r'"latBottomRight":-90.0,"lonBottomRight":180,"zoom":5},"languageEnum":"en"}';
+
+    //print(StringJson);
+    var data = jsonDecode(StringJson);
 
     //HTTP CALL
     var client = http.Client();
     try {
-      var response = await client.get(urll);
+      var response = await client.post(APIurl,
+          headers: {'Content-type': 'application/json'},
+          body: json.encode(data));
       SharedPreferencesHelper.setstatus(true);
       return response.body;
     } on Exception catch (ex) {
-      print('Erddap error: $ex');
+      print('Server error: $ex');
       //load test dataset if request fails, not sure if it's a good idea
       var stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');

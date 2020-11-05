@@ -18,7 +18,7 @@ class _WmoState extends State<StatefulWidget> {
     Map datapassed = ModalRoute.of(context).settings.arguments;
 
     List position = datapassed['position'];
-    List wmodata = datapassed['data'];
+    Map wmodata = datapassed['data'];
 
     List actionList;
     if (datapassed['from'] == 'home') {
@@ -28,7 +28,7 @@ class _WmoState extends State<StatefulWidget> {
             icon: Icon(Icons.grain),
             onPressed: () {
               Navigator.pushNamed(context, '/search_result',
-                  arguments: wmodata[0].toString());
+                  arguments: wmodata['platformCode'].toString());
             }),
         //For the heart icon, we use a future builder because we're gonna load fleet list
         //from user preferencies and compare our wmo to this list
@@ -40,7 +40,8 @@ class _WmoState extends State<StatefulWidget> {
                 (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
               //Here we call the build function with our fleet list and clicked wmo in input
               return snapshot.hasData
-                  ? _buildIcon(snapshot.data, wmodata[0].toString())
+                  ? _buildIcon(
+                      snapshot.data, wmodata['platformCode'].toString())
                   : Container();
             }),
       ];
@@ -54,7 +55,8 @@ class _WmoState extends State<StatefulWidget> {
                 (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
               //Here we call the build function with our fleet list and clicked wmo in input
               return snapshot.hasData
-                  ? _buildIcon(snapshot.data, wmodata[0].toString())
+                  ? _buildIcon(
+                      snapshot.data, wmodata['platformCode'].toString())
                   : Container();
             }),
       ];
@@ -63,7 +65,8 @@ class _WmoState extends State<StatefulWidget> {
     //Lets build the page
     return Scaffold(
         appBar: AppBar(
-            title: SelectableText("WMO : " + wmodata[0].toString()),
+            title:
+                SelectableText("WMO : " + wmodata['platformCode'].toString()),
             actions: actionList),
         body: // Then we build the reste of the page with wmo info
             Center(
@@ -71,48 +74,29 @@ class _WmoState extends State<StatefulWidget> {
           padding: const EdgeInsets.all(8),
           children: <Widget>[
             Container(
-              height: 40,
-              color: Colors.red[200],
-              child: Center(child: SelectableText('PI name : ' + wmodata[1])),
-            ),
-            Container(
-              height: 40,
-              color: Colors.amber[200],
-              child: Center(
-                  child: SelectableText('Cycle number : ' +
-                      wmodata[2].toString() +
-                      '  (' +
-                      position[0].toStringAsFixed(2) +
-                      '/' +
-                      position[1].toStringAsFixed(2) +
-                      ')')),
-            ),
-            Container(
-              height: 40,
-              color: Colors.cyan[200],
-              child:
-                  Center(child: SelectableText('Float type : ' + wmodata[3])),
-            ),
-            Container(
-              height: 40,
-              color: Colors.green[200],
-              child:
-                  Center(child: SelectableText('Profile date : ' + wmodata[4])),
-            ),
-            Container(
-              height: 10,
-              color: Colors.white,
-              child: Center(child: Text('')),
-            ),
+                height: 170,
+                child: FutureBuilder<List>(
+                    // retrieve data
+                    future: _retrievemetadata(
+                        wmodata['platformCode'].toString(),
+                        wmodata['cvNumber'].toString()),
+                    initialData: ["", "", "", 0, 0, 0, ""],
+                    builder:
+                        (BuildContext context, AsyncSnapshot<List> snapshot) {
+                      //Here we call the build function
+                      return snapshot.hasData
+                          ? _buildMeta(snapshot.data)
+                          : Container();
+                    })),
             // and the charts
             Container(
                 height: 400,
                 child: FutureBuilder<List<List<double>>>(
                     // retrieve data
-                    future: _retrievedata(
-                        wmodata[0].toString(), wmodata[2].toString()),
+                    future: _retrievedata(wmodata['platformCode'].toString(),
+                        wmodata['cvNumber'].toString()),
                     initialData: [
-                      [0.0, 0.0, 0.0],
+                      [0.0, 1000.0, 2000.0],
                       [1.0, 1.0, 1.0]
                     ],
                     builder: (BuildContext context,
@@ -126,14 +110,49 @@ class _WmoState extends State<StatefulWidget> {
         )));
   }
 
+  Widget _buildMeta(metalist) {
+    return ListView(padding: const EdgeInsets.all(8), children: <Widget>[
+      Container(
+        height: 40,
+        color: Colors.red[200],
+        child: Center(
+            child: SelectableText(
+                'PI name : ' + metalist[0] + ' (' + metalist[1] + ')')),
+      ),
+      Container(
+        height: 40,
+        color: Colors.amber[200],
+        child: Center(
+            child: SelectableText('Cycle number : ' +
+                metalist[3].toString() +
+                '  (' +
+                metalist[4].toStringAsFixed(2) +
+                '/' +
+                metalist[5].toStringAsFixed(2) +
+                ')')),
+      ),
+      Container(
+        height: 40,
+        color: Colors.cyan[200],
+        child: Center(child: SelectableText('Float type : ' + metalist[2])),
+      ),
+      Container(
+        height: 40,
+        color: Colors.green[200],
+        child: Center(child: SelectableText('Profile date : ' + metalist[6])),
+      ),
+      Container(
+        height: 20,
+        color: Colors.white,
+        child: Center(child: Text('')),
+      )
+    ]);
+  }
+
   Widget _buildChart(points) {
     var lims = getLims(points);
-    int step = 200;
-    if (lims[1] < 200) {
-      step = 50;
-    } else if (lims[1] < 50) {
-      step = 20;
-    }
+    int step = (lims[1] / 6).ceil();
+
     final yAxis = new ChartAxis<double>(
         opposite: false,
         span: DoubleSpan(lims[1], 0.0),
@@ -141,7 +160,7 @@ class _WmoState extends State<StatefulWidget> {
         tickGenerator: FixedTickGenerator(
             ticks: arange(start: 0, stop: lims[1].toInt(), step: step)));
     return LineChart(
-      chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 20.0, 30.0),
+      chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 30.0, 30.0),
       lines: [
         // Temp line
         new Line<List<double>, double, double>(
@@ -199,7 +218,7 @@ class _WmoState extends State<StatefulWidget> {
     );
   }
 
-  //THis is the function that builds the favorite icon with wmo and fleet list iin input
+  //This is the function that builds the favorite icon with wmo and fleet list iin input
   Widget _buildIcon(List<String> wmolist, String wmo) {
     if (wmolist.contains(wmo)) {
       return IconButton(
@@ -225,6 +244,7 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
   String stringJson;
   var jsonData;
 
+  //This is based on erddap ifremer server
   var urll =
       'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pres%2Ctemp%2Cpsal&platform_number=%22' +
           wmo +
@@ -259,8 +279,34 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
   }
 }
 
+Future<List> _retrievemetadata(wmo, cycle) async {
+  String stringJson;
+  var jsonData;
+
+  //This is based on erddap ifremer server
+  var urll =
+      'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?pi_name%2Cdata_center%2Cplatform_type%2Ccycle_number%2Clongitude%2Clatitude%2Ctime&platform_number=%22' +
+          wmo +
+          '%22&cycle_number=' +
+          cycle;
+  //print(urll);
+  var client = http.Client();
+  try {
+    //CALLING makeRequest with await to wait for the answer
+    var response = await client.get(urll);
+    stringJson = response.body;
+    jsonData = json.decode(stringJson);
+    return jsonData['table']['rows'][0];
+  } on Exception catch (ex) {
+    print('Erddap error: $ex');
+    return ["", "", "", 0, 0, 0, ""];
+  } finally {
+    client.close();
+  }
+}
+
 List<double> getLims(List<List<double>> points) {
-  var lims = [0.0, 0.0, 1000.0, 0.0, 1000.0, 0.0];
+  var lims = [0.0, 10.0, 1000.0, 0.0, 1000.0, 0.0];
 
   for (var i = 0; i < points.length; i++) {
     //PRES

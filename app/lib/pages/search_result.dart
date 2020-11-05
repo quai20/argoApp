@@ -83,8 +83,8 @@ class _SearchResultState extends State<StatefulWidget> {
 
     //TURNING DATA INTO MARKERS
     for (var i = 0; i < wmoinfo.length; i += 1) {
-      latitude = wmoinfo[i][5];
-      longitude = wmoinfo[i][6];
+      latitude = wmoinfo[i][2];
+      longitude = wmoinfo[i][3];
       //TRY CATCH IN CASE OF BAD LAT/LON
       try {
         _line.add(LatLng(latitude, longitude));
@@ -98,7 +98,10 @@ class _SearchResultState extends State<StatefulWidget> {
               iconSize: 15.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
-                  'data': wmoinfo[i],
+                  'data': {
+                    'platformCode': wmoinfo[i][0],
+                    'cvNumber': wmoinfo[i][1]
+                  },
                   'from': 'search',
                   'position': [latitude, longitude]
                 });
@@ -116,7 +119,7 @@ class _SearchResultState extends State<StatefulWidget> {
     _markers.add(
       Marker(
         point: new LatLng(
-            wmoinfo[wmoinfo.length - 1][5], wmoinfo[wmoinfo.length - 1][6]),
+            wmoinfo[wmoinfo.length - 1][2], wmoinfo[wmoinfo.length - 1][3]),
         builder: (ctx) => Container(
             child: IconButton(
           icon: Icon(Icons.lens),
@@ -161,7 +164,7 @@ class _SearchResultState extends State<StatefulWidget> {
   Future<List> fetchInfos(wmo) async {
     //Get traj data
     var urll =
-        'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Cpi_name%2Ccycle_number%2Cplatform_type%2Ctime%2Clatitude%2Clongitude&platform_number=%22' +
+        'http://www.ifremer.fr/erddap/tabledap/ArgoFloats.json?platform_number%2Ccycle_number%2Clatitude%2Clongitude&platform_number=%22' +
             wmo.toString() +
             '%22&orderBy(%22cycle_number%22)';
     //print(urll);
@@ -175,8 +178,8 @@ class _SearchResultState extends State<StatefulWidget> {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an empty point.
-      var jsonData = json.decode(
-          '{"table": {"rows": [["0000000","XXX", 0, "XXX","0000-00-00T00:00:00Z", 0.0, 0.0]]}}');
+      var jsonData =
+          json.decode('{"table": {"rows": [["0000000", 0, 0.0, 0.0]]}}');
       return jsonData['table']['rows'];
     }
   }

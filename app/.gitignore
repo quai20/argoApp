@@ -38,3 +38,6 @@ lib/generated_plugin_registrant.dart
 
 #Other
 letsbuild.sh
+
+# Signature things
+android/key.properties

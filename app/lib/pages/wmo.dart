@@ -272,7 +272,8 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
   } on Exception catch (ex) {
     print('Erddap error: $ex');
     return [
-      [0.0, 0.0, 0.0]
+      [0.0, 1000.0, 2000.0],
+      [1.0, 1.0, 1.0]
     ];
   } finally {
     client.close();
@@ -299,7 +300,15 @@ Future<List> _retrievemetadata(wmo, cycle) async {
     return jsonData['table']['rows'][0];
   } on Exception catch (ex) {
     print('Erddap error: $ex');
-    return ["", "", "", 0, 0, 0, ""];
+    return [
+      "unavailable",
+      "unavailable",
+      "unavailable",
+      0,
+      0,
+      0,
+      "unavailable"
+    ];
   } finally {
     client.close();
   }

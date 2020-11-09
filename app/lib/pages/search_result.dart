@@ -127,7 +127,10 @@ class _SearchResultState extends State<StatefulWidget> {
           iconSize: 15.0,
           onPressed: () {
             Navigator.pushNamed(context, '/wmo', arguments: {
-              'data': wmoinfo[wmoinfo.length - 1],
+              'data': {
+                'platformCode': wmoinfo[wmoinfo.length - 1][0],
+                'cvNumber': wmoinfo[wmoinfo.length - 1][1]
+              },
               'from': 'search'
             });
           },

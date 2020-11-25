@@ -30,7 +30,7 @@ class _MapWidgetState extends State<MapWidget> {
     LatLng center = args.center;
     DateTime displaydate = args.date;
     double zoom = args.zoom;
-    var maxZoom = 6.0;
+    var maxZoom = 8.0;
     var minZoom = 2.0;
     //Must change zoom to reload map tiles... I don't know why yet, some caching issue
     if (zoom == maxZoom) {

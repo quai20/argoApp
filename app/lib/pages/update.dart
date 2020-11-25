@@ -26,6 +26,7 @@ class _UpdateState extends State<Update> {
       jsonData = json.decode(stringJson);
     } on Exception catch (ex) {
       print('Erddap error: $ex');
+      SharedPreferencesHelper.setstatus(false);
       stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       jsonData = json.decode(stringJson);

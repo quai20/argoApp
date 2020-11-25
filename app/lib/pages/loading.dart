@@ -28,6 +28,7 @@ class _LoadingState extends State<Loading> {
       jsonData = json.decode(stringJson);
     } on Exception catch (ex) {
       print('request failed: $ex');
+      SharedPreferencesHelper.setstatus(false);
       //IF SERVER ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
       stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');
@@ -122,9 +123,15 @@ class _LoadingState extends State<Loading> {
     //HTTP CALL
     var client = http.Client();
     try {
-      var response = await client.post(APIurl,
-          headers: {'Content-type': 'application/json'},
-          body: json.encode(data));
+      var response = await client
+          .post(APIurl,
+              headers: {'Content-type': 'application/json'},
+              body: json.encode(data))
+          .timeout(const Duration(seconds: 5), onTimeout: () {
+        print('Request time out');
+        showAlertDialog(context);
+        return null;
+      });
       SharedPreferencesHelper.setstatus(true);
       return response.body;
     } on Exception catch (ex) {
@@ -162,4 +169,31 @@ class _LoadingState extends State<Loading> {
           size: 50.0,
         )));
   }
+}
+
+showAlertDialog(BuildContext context) {
+  // set up the button
+  Widget okButton = FlatButton(
+    child: Text("Quit"),
+    onPressed: () {
+      SystemNavigator.pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Data server not responding"),
+    content: Text("Sorry about that, Please try again later."),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

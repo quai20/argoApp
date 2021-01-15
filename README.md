@@ -1,7 +1,10 @@
 # argoApp
 
-<img src="https://user-images.githubusercontent.com/17851004/81565835-492aa680-939a-11ea-947c-d984c334b7c3.png"
+<img src="https://user-images.githubusercontent.com/17851004/81565835-492aa680-939a-11ea-947c-d984c334b7c3.png" align="left"
      alt="Icon" height="100"/>
+     
+<img src="https://cdn4.iconfinder.com/data/icons/logos-3/228/android-512.png"
+     alt="Icon" height="100"/>     
 
 ## Argo network exploration smartphone application
 

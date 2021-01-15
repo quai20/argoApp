@@ -194,7 +194,7 @@ class _WmoState extends State<StatefulWidget> {
           xFn: (meas) => meas[2],
           yFn: (meas) => meas[0],
           xAxis: new ChartAxis(
-              offset: -350.0,
+              offset: -((MediaQuery.of(context).size.height) - 320),
               paint: const PaintOptions.stroke(color: Colors.green),
               tickLabelFn: (x) => x.toStringAsFixed(1),
               tickLabelerStyle: new TextStyle(

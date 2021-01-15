@@ -90,7 +90,7 @@ class _WmoState extends State<StatefulWidget> {
                     })),
             // and the charts
             Container(
-                height: 400,
+                height: (MediaQuery.of(context).size.height) - 270,
                 child: FutureBuilder<List<List<double>>>(
                     // retrieve data
                     future: _retrievedata(wmodata['platformCode'].toString(),

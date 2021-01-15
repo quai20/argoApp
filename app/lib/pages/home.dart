@@ -78,6 +78,16 @@ class _MapWidgetState extends State<MapWidget> {
     //PAGE DISPLAY
     return new Scaffold(
       appBar: new AppBar(title: _setAppBarTitle(), actions: <Widget>[
+        //ADD HELP BUTTON
+        IconButton(
+          icon: Icon(Icons.help_outline),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _displayhelp(context),
+            );
+          },
+        ),
         //ADD CALENDAR
         IconButton(
             icon: Icon(Icons.calendar_today),
@@ -130,7 +140,7 @@ class _MapWidgetState extends State<MapWidget> {
     );
   }
 
-  Future<String> definelanguage() async {
+  Future<String> definetitle() async {
     var isonline = await SharedPreferencesHelper.getstatus();
     var language = await SharedPreferencesHelper.getlanguage();
 
@@ -155,13 +165,65 @@ class _MapWidgetState extends State<MapWidget> {
   _setAppBarTitle() {
     return FutureBuilder<String>(
         // get the language, saved in the user preferences
-        future: definelanguage(),
+        future: definetitle(),
         initialData: ' ',
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
             return (Text(snapshot.data));
           }
         });
+  }
+
+  Future<String> definehelptext() async {
+    var language = await SharedPreferencesHelper.getlanguage();
+    switch (language) {
+      case 'english':
+        {
+          return 'What you see on the map are the argo profiles for a given day (set with the "calendar" button). That means that each blue point corresponds to a measurement that has been done on the selected date. When you click on a profile, you access some of its data and metadata. Then you can add the float in your favorites ("heart" button) or display its complete trajectory ("points" button). From the trajectory view, you can access older profiles of the float. From the app menu, you can also search a float by its platform number, find your saved floats (your fleet), or learn about the argo program. You can also change the language of the app.';
+        }
+        break;
+      case 'francais':
+        {
+          return 'Ce que vous voyez sur la carte sont les profils argo pour un jour donné (défini avec le bouton "calendrier"). Cela signifie que chaque point bleu correspond à une mesure qui a été effectuée à la date sélectionnée. Lorsque vous cliquez sur un profil, vous accédez à certaines de ses données et métadonnées. Vous pouvez ensuite ajouter le flotteur dans vos favoris (bouton "coeur") ou afficher sa trajectoire complète (bouton "points"). Depuis la vue de la trajectoire, vous pouvez accéder aux anciens profils du flotteur. Dans le menu de l\'application, vous pouvez également rechercher un flotteur par son numéro de plate-forme, trouver vos flotteurs sauvegardés (votre flotte), ou vous renseigner sur le programme argo. Vous pouvez également changer la langue de l\'application.';
+        }
+        break;
+      default:
+        {
+          return ' ';
+        }
+    }
+  }
+
+  _gethelptext() {
+    return FutureBuilder<String>(
+        // get the language, saved in the user preferences
+        future: definehelptext(),
+        initialData: ' ',
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.hasData) {
+            return (Text(snapshot.data));
+          }
+        });
+  }
+
+  Widget _displayhelp(BuildContext context) {
+    return new AlertDialog(
+      title: Icon(Icons.message),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[_gethelptext()],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('OK'),
+        ),
+      ],
+    );
   }
 
   _setDrawer() {

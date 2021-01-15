@@ -155,7 +155,7 @@ class _SearchState extends State<Search> {
     } finally {
       client.close();
     }
-    print(json.decode(response.body));
+    //print(json.decode(response.body));
 
     //Create a new list from json, so that _filter can work with
     //List tempList = new List();

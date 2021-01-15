@@ -1,11 +1,14 @@
 # argoApp
 
-<img src="https://user-images.githubusercontent.com/17851004/81565835-492aa680-939a-11ea-947c-d984c334b7c3.png"
+<img src="https://user-images.githubusercontent.com/17851004/81565835-492aa680-939a-11ea-947c-d984c334b7c3.png" align="left"
      alt="Icon" height="100"/>
+     
+<img src="https://cdn4.iconfinder.com/data/icons/logos-3/228/android-512.png"
+     alt="Icon" height="100"/>     
 
 ## Argo network exploration smartphone application
 
-This is the main code for the android application for Argo network discovery. It's not available in app stores yet, so if you want to be a **beta-tester**, please get in touch (issue, twitter @balemkevin, ...).
+This is the main code for the android application for Argo network discovery. Available on the app store here : https://play.google.com/store/apps/details?id=com.kb.android.argo
 
 ### Features :
 

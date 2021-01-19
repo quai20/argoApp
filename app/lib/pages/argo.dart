@@ -30,6 +30,11 @@ class Argo extends StatelessWidget {
                   return Text('A propos d\'Argo');
                 }
                 break;
+              case 'spanish':
+                {
+                  return Text('Sobre Argo');
+                }
+                break;
             }
           }
         });
@@ -61,6 +66,16 @@ Argo is an international program that uses profiling floats to observe temperatu
 Argo est un programme international utilisant des flotteurs dit "profileurs" pour observer la température, la salinité, les courants et, depuis peu, les propriétés bio-optiques et bio-géochimiques des océans ; il est opérationnel depuis le début des années 2000. Les données en temps réel qu'il fournit sont utilisées dans la recherche climatique et océanographique. Un intérêt particulier de la recherche est de quantifier le contenu thermique de l'océan (OHC).Le réseau Argo se compose de près de 4000 "flotteurs" (ou "profileurs") à la dérive, déployés dans le monde entier. Chaque flotteur pèse entre 20 et 30 kg. Dans la plupart des cas, ils dérivent à une profondeur de 1000 mètres (profondeur de "parking") et, tous les 10 jours, en changeant leur flottabilité, ils plongent à une profondeur de 2000 mètres et se remontent ensuite à la surface, mesurant la conductivité, la température ainsi que la pression. À partir de ces données, il est possible de calculer la salinité et la densité. La densité de l'eau de mer est importante pour déterminer les mouvements à grande échelle de masse d'eau dans l'océan. Les vitesses moyennes des courants à 1000 mètres sont directement calculées via distance et la direction vers laquelle un flotteur dérive lorsqu'il est stationné à sa profondeur de parking, qui sont déterminés par les positions du flotteur à la surface. Les données sont transmises à la côte par satellite et sont accessibles à tous, sans restriction. Le programme Argo est nommé d'après le navire mythique grec Argo pour souligner la relation complémentaire d'Argo avec les altimètres du satellite Jason.
                     ''',
                     'Pour en savoir plus sur Argo :'
+                  ];
+                }
+                break;
+              case 'spanish':
+                {
+                  labels = [
+                    '''
+Argo es un programa internacional que utiliza boyas perfiladoras para observar la temperatura, salinidad, corrientes y, recientemente, las propiedades bio-ópticas y bio-geoquímicas en los océanos de la Tierra; ha estado en funcionamiento desde principios de los 2000. Los datos en tiempo real que proporciona este programa se utilizan en investigación climática y oceanográfica. De especial interés en investigación se encuentra la cuantificación del contenido de calor oceánico. La flota Argo consta de casi 4000 boyas Argo a la deriva (o boyas perfiladoras como se suelen llamar) desplegadas en todo el mundo. Cada boya pesa entre 20-30 kg. En la mayoría de los casos, las boyas se desplazan a una profundidad de 1000 metros (llamada profundidad de estacionamiento o “parking depth” en inglés) y cada 10 días, gracias al cambio de flotabilidad, se sumergen a una profundidad de 2000 metros y luego se mueven hacia la superficie del mar, midiendo perfiles de conductividad y temperatura además de presión. A partir de estos datos, se puede calcular la salinidad y densidad. La densidad del agua de mar es importante para determinar movimientos de gran escala en el océano. La velocidad media de las corrientes a 1000 metros se mide directamente con la distancia y dirección en las que se desplaza una boya mientras se encuentra “estacionada” a esa profundidad, lo que se determina por la posición de la boya en superficie. Los datos se transmiten a costa vía satelital, y están disponibles gratuitamente para todos, sin restricciones. El programa Argo lleva el nombre del mítico barco griego Argo para enfatizar la relación complementaria de Argo con los altímetros satelitales Jason.
+                    ''',
+                    'Obtenga más información sobre Argo :'
                   ];
                 }
                 break;

@@ -31,6 +31,11 @@ class About extends StatelessWidget {
                   return Text('A propos de cette application');
                 }
                 break;
+              case 'spanish':
+                {
+                  return Text('Sobre esta aplicación');
+                }
+                break;
             }
           }
         });
@@ -63,6 +68,15 @@ class About extends StatelessWidget {
                   ];
                 }
                 break;
+              case 'spanish':
+                {
+                  labels = [
+                    'Esta aplicación se proporciona "tal cual". ',
+                    'Por favor, notifique cualquier error, problema o ideas de nuevas funciones en:',
+                    'Para otras solicitudes, por favor, contáctese con:'
+                  ];
+                }
+                break;
             }
             return ListView(
               padding: const EdgeInsets.all(8),
@@ -79,20 +93,20 @@ class About extends StatelessWidget {
                   color: Colors.white,
                   child: Text(' '),
                 ),
-                Container(                  
+                Container(
                   color: Colors.white,
                   child: Text(labels[0]),
                 ),
-                 Container(
+                Container(
                   height: 30,
                   color: Colors.white,
                   child: Text(' '),
                 ),
-                Container(                  
+                Container(
                   color: Colors.white,
                   child: Text(labels[1]),
                 ),
-                Container(                 
+                Container(
                   color: Colors.white,
                   child: new InkWell(
                       child: new Text(
@@ -108,7 +122,7 @@ class About extends StatelessWidget {
                   color: Colors.white,
                   child: Text(' '),
                 ),
-                Container(                  
+                Container(
                   color: Colors.white,
                   child: Text(labels[2]),
                 ),

@@ -156,6 +156,11 @@ class _MapWidgetState extends State<MapWidget> {
             return 'Le réseau Argo';
           }
           break;
+        case 'spanish':
+          {
+            return 'Red Argo';
+          }
+          break;
       }
     } else {
       return 'Demo [offline]';
@@ -185,6 +190,11 @@ class _MapWidgetState extends State<MapWidget> {
       case 'francais':
         {
           return 'Ce que vous voyez sur la carte sont les profils argo pour un jour donné (défini avec le bouton "calendrier"). Cela signifie que chaque point bleu correspond à une mesure qui a été effectuée à la date sélectionnée. Lorsque vous cliquez sur un profil, vous accédez à certaines de ses données et métadonnées. Vous pouvez ensuite ajouter le flotteur dans vos favoris (bouton "coeur") ou afficher sa trajectoire complète (bouton "points"). Depuis la vue de la trajectoire, vous pouvez accéder aux anciens profils du flotteur. Dans le menu de l\'application, vous pouvez également rechercher un flotteur par son numéro de plate-forme, trouver vos flotteurs sauvegardés (votre flotte), ou vous renseigner sur le programme argo. Vous pouvez également changer la langue de l\'application.';
+        }
+        break;
+      case 'spanish':
+        {
+          return 'Lo que puedes ver en el mapa son los perfiles de las boyas Argo en un día determinado (elige con el icono “Calendario”). Esto significa que cada punto azul corresponde a una medición realizada en la fecha seleccionada. Al hacer clic en un perfil, accedes a algunos de sus datos y metadatos. Después, puedes añadir la boya a “Tus favoritos” (icono “corazón”) o mostrar su trayectoria completa (icono “puntos”). Desde la vista de trayectoria, puedes acceder a perfiles más antiguos de la misma boya. Desde el menú de la aplicación, también puedes buscar una boya por su numero de plataforma, encontrar tus boyas guardadas (tu flota), u obtener más información sobre el programa Argo. También puedes cambiar el idioma de la aplicación (inglés, francés o español).';
         }
         break;
       default:
@@ -254,6 +264,17 @@ class _MapWidgetState extends State<MapWidget> {
                     'A propos d\'Argo',
                     'A propos de cette application',
                     'Langue'
+                  ];
+                }
+                break;
+              case 'spanish':
+                {
+                  labels = [
+                    'Busca una boya perfiladora',
+                    'Mi flota',
+                    'Sobre Argo',
+                    'Sobre esta aplicación',
+                    'Idioma'
                   ];
                 }
                 break;

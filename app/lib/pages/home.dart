@@ -99,6 +99,7 @@ class _MapWidgetState extends State<MapWidget> {
 
               var from = DateTime.utc(2000, 1, 1);
               DatePicker.showDatePicker(context,
+                  locale: LocaleType.en,
                   showTitleActions: true,
                   minTime: from,
                   maxTime: now,
@@ -178,6 +179,31 @@ class _MapWidgetState extends State<MapWidget> {
           }
         });
   }
+
+  // Future<LocaleType> _getLocale() async {
+  //   var language = await SharedPreferencesHelper.getlanguage();
+  //   switch (language) {
+  //     case 'english':
+  //       {
+  //         return LocaleType.en;
+  //       }
+  //       break;
+  //     case 'francais':
+  //       {
+  //         return LocaleType.fr;
+  //       }
+  //       break;
+  //     case 'spanish':
+  //       {
+  //         return LocaleType.es;
+  //       }
+  //       break;
+  //     default:
+  //       {
+  //         return LocaleType.en;
+  //       }
+  //   }
+  // }
 
   Future<String> definehelptext() async {
     var language = await SharedPreferencesHelper.getlanguage();

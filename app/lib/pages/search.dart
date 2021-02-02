@@ -188,6 +188,11 @@ class _SearchState extends State<Search> {
                   return Text('Rechercher un flotteur');
                 }
                 break;
+              case 'spanish':
+                {
+                  return Text('Busca una boya perfiladora');
+                }
+                break;
             }
           }
         });

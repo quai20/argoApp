@@ -74,9 +74,13 @@ class _FleetState extends State<StatefulWidget> {
                   return Text('Ma flotte');
                 }
                 break;
-            }           
+              case 'spanish':
+                {
+                  return Text('Mi flota');
+                }
+                break;
+            }
           }
         });
   }
-  
 }

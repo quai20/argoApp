@@ -161,14 +161,14 @@ class _WmoState extends State<StatefulWidget> {
     final List<charts.Series<List, double>> seriesList = [
       new charts.Series<List, double>(
         id: 'Temp [°C]',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (meas, _) => meas[0],
         measureFn: (meas, _) => meas[1] * 100,
         data: points,
       ),
       new charts.Series<List, double>(
         id: 'Psal [psu]',
-        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (meas, _) => meas[0],
         measureFn: (meas, _) => meas[2] * 100,
         data: points,
@@ -177,6 +177,7 @@ class _WmoState extends State<StatefulWidget> {
 
     return new charts.LineChart(seriesList,
         animate: false,
+        behaviors: [new charts.SeriesLegend(showMeasures: true)],
         domainAxis: new charts.NumericAxisSpec(
             tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                 zeroBound: false, desiredMinTickCount: 4),

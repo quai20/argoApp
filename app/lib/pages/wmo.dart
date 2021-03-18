@@ -4,7 +4,6 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:scidart/numdart.dart';
 
 class Wmo extends StatefulWidget {
   @override
@@ -17,7 +16,7 @@ class _WmoState extends State<StatefulWidget> {
     //Get wmo clicked from page context
     Map datapassed = ModalRoute.of(context).settings.arguments;
 
-    List position = datapassed['position'];
+    //List position = datapassed['position'];
     Map wmodata = datapassed['data'];
 
     List actionList;
@@ -90,6 +89,7 @@ class _WmoState extends State<StatefulWidget> {
                     })),
             // and the charts
             Container(
+                padding: const EdgeInsets.all(8),
                 height: (MediaQuery.of(context).size.height) - 270,
                 child: new RotatedBox(
                     quarterTurns: 1,
@@ -99,7 +99,7 @@ class _WmoState extends State<StatefulWidget> {
                             wmodata['platformCode'].toString(),
                             wmodata['cvNumber'].toString()),
                         initialData: [
-                          [0.0, 1000.0, 2000.0],
+                          [0.0, 0.0, 0.0],
                           [1.0, 1.0, 1.0]
                         ],
                         builder: (BuildContext context,
@@ -153,35 +153,59 @@ class _WmoState extends State<StatefulWidget> {
   }
 
   Widget _buildChart(points) {
-    //var lims = getLims(points);
-    //int step = (lims[1] / 6).ceil();
+    final tickformattert = charts.BasicNumericTickFormatterSpec(
+        (num value) => (value / 100).toString() + "°C");
+    final tickformatters = charts.BasicNumericTickFormatterSpec(
+        (num value) => (value / 100).toString());
 
     final List<charts.Series<List, double>> seriesList = [
       new charts.Series<List, double>(
         id: 'Temp [°C]',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (meas, _) => meas[0],
-        measureFn: (meas, _) => meas[1],
+        measureFn: (meas, _) => meas[1] * 100,
         data: points,
       ),
       new charts.Series<List, double>(
         id: 'Psal [psu]',
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (meas, _) => meas[0],
-        measureFn: (meas, _) => meas[2],
+        measureFn: (meas, _) => meas[2] * 100,
         data: points,
       )..setAttribute(charts.measureAxisIdKey, 'secondaryMeasureAxisId')
     ];
 
     return new charts.LineChart(seriesList,
         animate: false,
-        behaviors: [new charts.SeriesLegend()],
-        primaryMeasureAxis: new charts.NumericAxisSpec(
+        domainAxis: new charts.NumericAxisSpec(
             tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-                zeroBound: false, desiredTickCount: 5)),
+                zeroBound: false, desiredMinTickCount: 4),
+            renderSpec: charts.GridlineRendererSpec(
+                lineStyle: charts.LineStyleSpec(
+                    color: charts.MaterialPalette.gray.shadeDefault,
+                    dashPattern: [4, 2]))),
+        primaryMeasureAxis: new charts.NumericAxisSpec(
+          tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+              zeroBound: false, desiredTickCount: 4),
+          tickFormatterSpec: tickformattert,
+          renderSpec: charts.SmallTickRendererSpec(
+              labelStyle: new charts.TextStyleSpec(
+                fontSize: 12,
+                color: charts.MaterialPalette.red.shadeDefault,
+              ),
+              labelRotation: seriesList.last.data.length <= 2 ? 0 : -90,
+              labelOffsetFromAxisPx: 15),
+        ),
         secondaryMeasureAxis: new charts.NumericAxisSpec(
             tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-                zeroBound: false, desiredTickCount: 5)));
+                zeroBound: false, desiredTickCount: 4),
+            tickFormatterSpec: tickformatters,
+            renderSpec: charts.SmallTickRendererSpec(
+                labelStyle: new charts.TextStyleSpec(
+                  fontSize: 12,
+                  color: charts.MaterialPalette.blue.shadeDefault,
+                ),
+                labelRotation: seriesList.last.data.length <= 2 ? 0 : -90)));
   }
 
   //This is the function that builds the favorite icon with wmo and fleet list iin input
@@ -238,7 +262,7 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
   } on Exception catch (ex) {
     print('Erddap error: $ex');
     return [
-      [0.0, 1000.0, 2000.0],
+      [0.0, 0.0, 0.0],
       [1.0, 1.0, 1.0]
     ];
   } finally {
@@ -278,33 +302,4 @@ Future<List> _retrievemetadata(wmo, cycle) async {
   } finally {
     client.close();
   }
-}
-
-List<double> getLims(List<List<double>> points) {
-  var lims = [0.0, 10.0, 1000.0, 0.0, 1000.0, 0.0];
-
-  for (var i = 0; i < points.length; i++) {
-    //PRES
-    //if (points[i][0] < lims[0]) {
-    //  lims[0] = points[i][0];
-    //}
-    if (points[i][0] > lims[1]) {
-      lims[1] = points[i][0];
-    }
-    //TEMP
-    if (points[i][1] < lims[2]) {
-      lims[2] = points[i][1];
-    }
-    if (points[i][1] > lims[3]) {
-      lims[3] = points[i][1];
-    }
-    //PSAL
-    if (points[i][2] < lims[4]) {
-      lims[4] = points[i][2];
-    }
-    if (points[i][2] > lims[5]) {
-      lims[5] = points[i][2];
-    }
-  }
-  return lims;
 }

@@ -66,7 +66,8 @@ class _WmoState extends State<StatefulWidget> {
         appBar: AppBar(
             title:
                 SelectableText("WMO : " + wmodata['platformCode'].toString()),
-            actions: actionList),
+            actions: actionList,
+            backgroundColor: Color(0xff005b96)),
         body: // Then we build the reste of the page with wmo info
             Center(
                 child: ListView(
@@ -87,10 +88,19 @@ class _WmoState extends State<StatefulWidget> {
                           ? _buildMeta(snapshot.data)
                           : Container();
                     })),
+            Container(
+                height: 15,
+                child: Center(
+                    child: Text('Temperature [°C]',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold)))),
             // and the charts
             Container(
-                padding: const EdgeInsets.all(8),
-                height: (MediaQuery.of(context).size.height) - 270,
+                //padding: const EdgeInsets.all(8),
+                margin: const EdgeInsets.only(left: 15.0, right: 15.0),
+                height: (MediaQuery.of(context).size.height) - 300,
                 child: new RotatedBox(
                     quarterTurns: 1,
                     child: FutureBuilder<List<List<double>>>(
@@ -100,7 +110,7 @@ class _WmoState extends State<StatefulWidget> {
                             wmodata['cvNumber'].toString()),
                         initialData: [
                           [0.0, 0.0, 0.0],
-                          [1.0, 1.0, 1.0]
+                          [0.0, 0.0, 0.0]
                         ],
                         builder: (BuildContext context,
                             AsyncSnapshot<List<List<double>>> snapshot) {
@@ -108,7 +118,15 @@ class _WmoState extends State<StatefulWidget> {
                           return snapshot.hasData
                               ? _buildChart(snapshot.data)
                               : Container();
-                        })))
+                        }))),
+            Container(
+                height: 15,
+                child: Center(
+                    child: Text('Salinity [psu]',
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold))))
           ],
         )));
   }
@@ -117,14 +135,14 @@ class _WmoState extends State<StatefulWidget> {
     return ListView(padding: const EdgeInsets.all(8), children: <Widget>[
       Container(
         height: 40,
-        color: Colors.red[200],
+        color: Color(0xff4caac5),
         child: Center(
             child: SelectableText(
                 'PI name : ' + metalist[0] + ' (' + metalist[1] + ')')),
       ),
       Container(
         height: 40,
-        color: Colors.amber[200],
+        color: Color(0xffb2dae6),
         child: Center(
             child: SelectableText('Cycle number : ' +
                 metalist[3].toString() +
@@ -136,12 +154,12 @@ class _WmoState extends State<StatefulWidget> {
       ),
       Container(
         height: 40,
-        color: Colors.cyan[200],
+        color: Color(0xff4caac5),
         child: Center(child: SelectableText('Float type : ' + metalist[2])),
       ),
       Container(
         height: 40,
-        color: Colors.green[200],
+        color: Color(0xffb2dae6),
         child: Center(child: SelectableText('Profile date : ' + metalist[6])),
       ),
       Container(
@@ -153,8 +171,6 @@ class _WmoState extends State<StatefulWidget> {
   }
 
   Widget _buildChart(points) {
-    final tickformattert = charts.BasicNumericTickFormatterSpec(
-        (num value) => (value / 100).toString() + "°C");
     final tickformatters = charts.BasicNumericTickFormatterSpec(
         (num value) => (value / 100).toString());
 
@@ -177,7 +193,6 @@ class _WmoState extends State<StatefulWidget> {
 
     return new charts.LineChart(seriesList,
         animate: false,
-        behaviors: [new charts.SeriesLegend(showMeasures: true)],
         domainAxis: new charts.NumericAxisSpec(
             tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                 zeroBound: false, desiredMinTickCount: 4),
@@ -188,7 +203,7 @@ class _WmoState extends State<StatefulWidget> {
         primaryMeasureAxis: new charts.NumericAxisSpec(
           tickProviderSpec: new charts.BasicNumericTickProviderSpec(
               zeroBound: false, desiredTickCount: 4),
-          tickFormatterSpec: tickformattert,
+          tickFormatterSpec: tickformatters,
           renderSpec: charts.SmallTickRendererSpec(
               labelStyle: new charts.TextStyleSpec(
                 fontSize: 12,
@@ -264,7 +279,7 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
     print('Erddap error: $ex');
     return [
       [0.0, 0.0, 0.0],
-      [1.0, 1.0, 1.0]
+      [0.0, 0.0, 0.0]
     ];
   } finally {
     client.close();

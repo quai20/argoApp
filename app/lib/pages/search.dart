@@ -65,12 +65,15 @@ class _SearchState extends State<Search> {
   }
 
   Widget _buildBar(BuildContext context) {
-    return new AppBar(title: _appBarTitle, actions: <Widget>[
-      new IconButton(
-        icon: _searchIcon,
-        onPressed: _searchPressed,
-      )
-    ]);
+    return new AppBar(
+        title: _appBarTitle,
+        backgroundColor: Color(0xff005b96),
+        actions: <Widget>[
+          new IconButton(
+            icon: _searchIcon,
+            onPressed: _searchPressed,
+          )
+        ]);
   }
 
   //building the list

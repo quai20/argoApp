@@ -20,19 +20,22 @@ class _SearchResultState extends State<StatefulWidget> {
 
     //Lets build this page like the wmo page
     return Scaffold(
-      appBar: AppBar(title: Text("WMO : " + wmo), actions: <Widget>[
-        FutureBuilder<List<String>>(
-            // get the wmofleetlist, saved in the preferences
-            future: SharedPreferencesHelper.getwmofleet(),
-            initialData: List<String>(),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-              //Future builder for the favorite icon
-              return snapshot.hasData
-                  ? _buildIcon(snapshot.data, wmo)
-                  : Container();
-            }),
-      ]),
+      appBar: AppBar(
+          title: Text("WMO : " + wmo),
+          backgroundColor: Color(0xff005b96),
+          actions: <Widget>[
+            FutureBuilder<List<String>>(
+                // get the wmofleetlist, saved in the preferences
+                future: SharedPreferencesHelper.getwmofleet(),
+                initialData: List<String>(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<String>> snapshot) {
+                  //Future builder for the favorite icon
+                  return snapshot.hasData
+                      ? _buildIcon(snapshot.data, wmo)
+                      : Container();
+                }),
+          ]),
       body: FutureBuilder<List>(
           // get the wmoinfos, via an erddap function
           future: fetchInfos(wmo),

@@ -12,15 +12,15 @@ class _LanguageState extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          //The leading icon button is cheating, to avoid rebuilding drawer after changing language
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                int count = 0;
-                Navigator.of(context).popUntil((_) => count++ >= 2);
-              }),
-          title: Text("Language"),
-        ),
+            //The leading icon button is cheating, to avoid rebuilding drawer after changing language
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  int count = 0;
+                  Navigator.of(context).popUntil((_) => count++ >= 2);
+                }),
+            title: Text("Language"),
+            backgroundColor: Color(0xff005b96)),
         //Future builder : the future parametre will be the user language, and in the builder we will
         //draw the listview depending of language saved in the pref
         body: FutureBuilder<String>(

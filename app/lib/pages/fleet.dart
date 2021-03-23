@@ -12,8 +12,7 @@ class _FleetState extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: _setAppBarTitle(),
-        ),
+            title: _setAppBarTitle(), backgroundColor: Color(0xff005b96)),
         //Future builder : the future parametre will be the fleet list, and in the builder we will
         //draw the listview depending of the list (in the builder, the list is snapshot.data)
         body: FutureBuilder<List<String>>(

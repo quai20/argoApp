@@ -8,8 +8,7 @@ class About extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: _setAppBarTitle(),
-        ),
+            title: _setAppBarTitle(), backgroundColor: Color(0xff005b96)),
         body: Center(child: _setContent()));
   }
 

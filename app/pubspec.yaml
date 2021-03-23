@@ -32,6 +32,7 @@ dependencies:
   dio: ^1.0.0
   fcharts: any
   scidart: ^0.0.1-dev.6  
+  charts_flutter: ^0.10.0
 
 dev_dependencies:
   flutter_test:

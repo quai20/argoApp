@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:Argo/pages/userpreference.dart';
-import 'package:fcharts/fcharts.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:scidart/numdart.dart';
 
 class Wmo extends StatefulWidget {
   @override
@@ -17,7 +16,7 @@ class _WmoState extends State<StatefulWidget> {
     //Get wmo clicked from page context
     Map datapassed = ModalRoute.of(context).settings.arguments;
 
-    List position = datapassed['position'];
+    //List position = datapassed['position'];
     Map wmodata = datapassed['data'];
 
     List actionList;
@@ -67,7 +66,8 @@ class _WmoState extends State<StatefulWidget> {
         appBar: AppBar(
             title:
                 SelectableText("WMO : " + wmodata['platformCode'].toString()),
-            actions: actionList),
+            actions: actionList,
+            backgroundColor: Color(0xff005b96)),
         body: // Then we build the reste of the page with wmo info
             Center(
                 child: ListView(
@@ -88,24 +88,45 @@ class _WmoState extends State<StatefulWidget> {
                           ? _buildMeta(snapshot.data)
                           : Container();
                     })),
+            Container(
+                height: 15,
+                child: Center(
+                    child: Text('Temperature [°C]',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold)))),
             // and the charts
             Container(
-                height: (MediaQuery.of(context).size.height) - 270,
-                child: FutureBuilder<List<List<double>>>(
-                    // retrieve data
-                    future: _retrievedata(wmodata['platformCode'].toString(),
-                        wmodata['cvNumber'].toString()),
-                    initialData: [
-                      [0.0, 1000.0, 2000.0],
-                      [1.0, 1.0, 1.0]
-                    ],
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<List<double>>> snapshot) {
-                      //Here we call the build function
-                      return snapshot.hasData
-                          ? _buildChart(snapshot.data)
-                          : Container();
-                    }))
+                //padding: const EdgeInsets.all(8),
+                margin: const EdgeInsets.only(left: 15.0, right: 15.0),
+                height: (MediaQuery.of(context).size.height) - 300,
+                child: new RotatedBox(
+                    quarterTurns: 1,
+                    child: FutureBuilder<List<List<double>>>(
+                        // retrieve data
+                        future: _retrievedata(
+                            wmodata['platformCode'].toString(),
+                            wmodata['cvNumber'].toString()),
+                        initialData: [
+                          [0.0, 0.0, 0.0],
+                          [0.0, 0.0, 0.0]
+                        ],
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<List<double>>> snapshot) {
+                          //Here we call the build function
+                          return snapshot.hasData
+                              ? _buildChart(snapshot.data)
+                              : Container();
+                        }))),
+            Container(
+                height: 15,
+                child: Center(
+                    child: Text('Salinity [psu]',
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold))))
           ],
         )));
   }
@@ -114,14 +135,14 @@ class _WmoState extends State<StatefulWidget> {
     return ListView(padding: const EdgeInsets.all(8), children: <Widget>[
       Container(
         height: 40,
-        color: Colors.red[200],
+        color: Color(0xff4caac5),
         child: Center(
             child: SelectableText(
                 'PI name : ' + metalist[0] + ' (' + metalist[1] + ')')),
       ),
       Container(
         height: 40,
-        color: Colors.amber[200],
+        color: Color(0xffb2dae6),
         child: Center(
             child: SelectableText('Cycle number : ' +
                 metalist[3].toString() +
@@ -133,12 +154,12 @@ class _WmoState extends State<StatefulWidget> {
       ),
       Container(
         height: 40,
-        color: Colors.cyan[200],
+        color: Color(0xff4caac5),
         child: Center(child: SelectableText('Float type : ' + metalist[2])),
       ),
       Container(
         height: 40,
-        color: Colors.green[200],
+        color: Color(0xffb2dae6),
         child: Center(child: SelectableText('Profile date : ' + metalist[6])),
       ),
       Container(
@@ -150,72 +171,57 @@ class _WmoState extends State<StatefulWidget> {
   }
 
   Widget _buildChart(points) {
-    var lims = getLims(points);
-    int step = (lims[1] / 6).ceil();
+    final tickformatters = charts.BasicNumericTickFormatterSpec(
+        (num value) => (value / 100).toString());
 
-    final yAxis = new ChartAxis<double>(
-        opposite: false,
-        span: DoubleSpan(lims[1], 0.0),
-        tickLabelFn: (x) => x.toString().split("\.")[0],
-        tickGenerator: FixedTickGenerator(
-            ticks: arange(start: 0, stop: lims[1].toInt(), step: step)));
-    return LineChart(
-      chartPadding: new EdgeInsets.fromLTRB(50.0, 20.0, 30.0, 30.0),
-      lines: [
-        // Temp line
-        new Line<List<double>, double, double>(
-          data: points,
-          xFn: (meas) => meas[1],
-          yFn: (meas) => meas[0],
-          xAxis: new ChartAxis(
-              tickLabelerStyle: new TextStyle(
-                  color: Colors.blue, fontWeight: FontWeight.bold),
-              paint: const PaintOptions.stroke(color: Colors.blue),
-              tickLabelFn: (x) => x.toStringAsFixed(1),
-              span: DoubleSpan(lims[2], lims[3]),
-              tickGenerator: FixedTickGenerator(
-                  ticks: linspace(lims[2], lims[3], num: 5))),
-          yAxis: yAxis,
-          marker: const MarkerOptions(
-              paint: const PaintOptions.fill(color: Colors.blue),
-              shape: MarkerShapes.circle,
-              size: 2.0),
-          stroke: const PaintOptions.stroke(
-              color: Colors.transparent, strokeWidth: 1.0),
-          legend: new LegendItem(
-            paint: const PaintOptions.fill(color: Colors.blue),
-            text: 'Temp (°C)',
-          ),
-        ),
+    final List<charts.Series<List, double>> seriesList = [
+      new charts.Series<List, double>(
+        id: 'Temp [°C]',
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        domainFn: (meas, _) => meas[0],
+        measureFn: (meas, _) => meas[1] * 100,
+        data: points,
+      ),
+      new charts.Series<List, double>(
+        id: 'Psal [psu]',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (meas, _) => meas[0],
+        measureFn: (meas, _) => meas[2] * 100,
+        data: points,
+      )..setAttribute(charts.measureAxisIdKey, 'secondaryMeasureAxisId')
+    ];
 
-        // size line
-        new Line<List<double>, double, double>(
-          data: points,
-          xFn: (meas) => meas[2],
-          yFn: (meas) => meas[0],
-          xAxis: new ChartAxis(
-              offset: -((MediaQuery.of(context).size.height) - 320),
-              paint: const PaintOptions.stroke(color: Colors.green),
-              tickLabelFn: (x) => x.toStringAsFixed(1),
-              tickLabelerStyle: new TextStyle(
-                  color: Colors.green, fontWeight: FontWeight.bold),
-              span: DoubleSpan(lims[4], lims[5]),
-              tickGenerator: FixedTickGenerator(
-                  ticks: linspace(lims[4], lims[5], num: 5))),
-          yAxis: yAxis,
-          marker: const MarkerOptions(
-              paint: const PaintOptions.fill(color: Colors.green),
-              shape: MarkerShapes.circle,
-              size: 2.0),
-          stroke: const PaintOptions.stroke(
-              color: Colors.transparent, strokeWidth: 1.0),
-          legend: new LegendItem(
-            paint: const PaintOptions.fill(color: Colors.green),
-            text: 'Psal (/)',
-          ),
+    return new charts.LineChart(seriesList,
+        animate: false,
+        domainAxis: new charts.NumericAxisSpec(
+            tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+                zeroBound: false, desiredMinTickCount: 4),
+            renderSpec: charts.GridlineRendererSpec(
+                lineStyle: charts.LineStyleSpec(
+                    color: charts.MaterialPalette.gray.shadeDefault,
+                    dashPattern: [4, 2]))),
+        primaryMeasureAxis: new charts.NumericAxisSpec(
+          tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+              zeroBound: false, desiredTickCount: 4),
+          tickFormatterSpec: tickformatters,
+          renderSpec: charts.SmallTickRendererSpec(
+              labelStyle: new charts.TextStyleSpec(
+                fontSize: 12,
+                color: charts.MaterialPalette.red.shadeDefault,
+              ),
+              labelRotation: seriesList.last.data.length <= 2 ? 0 : -90,
+              labelOffsetFromAxisPx: 15),
         ),
-      ],
-    );
+        secondaryMeasureAxis: new charts.NumericAxisSpec(
+            tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+                zeroBound: false, desiredTickCount: 4),
+            tickFormatterSpec: tickformatters,
+            renderSpec: charts.SmallTickRendererSpec(
+                labelStyle: new charts.TextStyleSpec(
+                  fontSize: 12,
+                  color: charts.MaterialPalette.blue.shadeDefault,
+                ),
+                labelRotation: seriesList.last.data.length <= 2 ? 0 : -90)));
   }
 
   //This is the function that builds the favorite icon with wmo and fleet list iin input
@@ -272,8 +278,8 @@ Future<List<List<double>>> _retrievedata(wmo, cycle) async {
   } on Exception catch (ex) {
     print('Erddap error: $ex');
     return [
-      [0.0, 1000.0, 2000.0],
-      [1.0, 1.0, 1.0]
+      [0.0, 0.0, 0.0],
+      [0.0, 0.0, 0.0]
     ];
   } finally {
     client.close();
@@ -312,33 +318,4 @@ Future<List> _retrievemetadata(wmo, cycle) async {
   } finally {
     client.close();
   }
-}
-
-List<double> getLims(List<List<double>> points) {
-  var lims = [0.0, 10.0, 1000.0, 0.0, 1000.0, 0.0];
-
-  for (var i = 0; i < points.length; i++) {
-    //PRES
-    //if (points[i][0] < lims[0]) {
-    //  lims[0] = points[i][0];
-    //}
-    if (points[i][0] > lims[1]) {
-      lims[1] = points[i][0];
-    }
-    //TEMP
-    if (points[i][1] < lims[2]) {
-      lims[2] = points[i][1];
-    }
-    if (points[i][1] > lims[3]) {
-      lims[3] = points[i][1];
-    }
-    //PSAL
-    if (points[i][2] < lims[4]) {
-      lims[4] = points[i][2];
-    }
-    if (points[i][2] > lims[5]) {
-      lims[5] = points[i][2];
-    }
-  }
-  return lims;
 }

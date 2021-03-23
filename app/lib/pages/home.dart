@@ -77,40 +77,43 @@ class _MapWidgetState extends State<MapWidget> {
 
     //PAGE DISPLAY
     return new Scaffold(
-      appBar: new AppBar(title: _setAppBarTitle(), actions: <Widget>[
-        //ADD HELP BUTTON
-        IconButton(
-          icon: Icon(Icons.help_outline),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _displayhelp(context),
-            );
-          },
-        ),
-        //ADD CALENDAR
-        IconButton(
-            icon: Icon(Icons.calendar_today),
-            onPressed: () {
-              //CALENDAR HANDLING
-              var now = new DateTime.now();
-              //THIS IS FOR SURE A SOURCE OF ERROR FOR AN INTERNATIONAL USE
-              now = now.subtract(new Duration(days: 1));
+      appBar: new AppBar(
+          title: _setAppBarTitle(),
+          backgroundColor: Color(0xff005b96),
+          actions: <Widget>[
+            //ADD HELP BUTTON
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => _displayhelp(context),
+                );
+              },
+            ),
+            //ADD CALENDAR
+            IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () {
+                  //CALENDAR HANDLING
+                  var now = new DateTime.now();
+                  //THIS IS FOR SURE A SOURCE OF ERROR FOR AN INTERNATIONAL USE
+                  now = now.subtract(new Duration(days: 1));
 
-              var from = DateTime.utc(2000, 1, 1);
-              DatePicker.showDatePicker(context,
-                  locale: LocaleType.en,
-                  showTitleActions: true,
-                  minTime: from,
-                  maxTime: now,
-                  onChanged: (date) {}, onConfirm: (date) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/update', (Route<dynamic> route) => false,
-                    arguments: HomeScreenArguments(
-                        date, mapController.center, mapController.zoom));
-              }, currentTime: displaydate);
-            }),
-      ]),
+                  var from = DateTime.utc(2000, 1, 1);
+                  DatePicker.showDatePicker(context,
+                      locale: LocaleType.en,
+                      showTitleActions: true,
+                      minTime: from,
+                      maxTime: now,
+                      onChanged: (date) {}, onConfirm: (date) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/update', (Route<dynamic> route) => false,
+                        arguments: HomeScreenArguments(
+                            date, mapController.center, mapController.zoom));
+                  }, currentTime: displaydate);
+                }),
+          ]),
       backgroundColor: Colors.blue[800],
       //ADD MAP
       body: FlutterMap(

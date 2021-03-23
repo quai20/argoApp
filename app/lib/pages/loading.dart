@@ -26,12 +26,14 @@ class _LoadingState extends State<Loading> {
       stringJson = await makeRequest(targetdate);
       print("request succeeded");
       jsonData = json.decode(stringJson);
+      SharedPreferencesHelper.setstatus(true);
     } on Exception catch (ex) {
       print('request failed: $ex');
       //IF SERVER ERROR, LOAD AN EXAMPLE DATASET... NOT THE BEST IDEA MAYBE
       stringJson =
           await rootBundle.loadString('assets/ArgoFloats_testdata.json');
       jsonData = json.decode(stringJson);
+      SharedPreferencesHelper.setstatus(false);
     }
 
     //pushing to /home context with data argument, with pushReplacement to avoid back arrow in the home view
@@ -121,19 +123,23 @@ class _LoadingState extends State<Loading> {
 
     //HTTP CALL
     var client = http.Client();
+
     try {
-      var response = await client.post(APIurl,
-          headers: {'Content-type': 'application/json'},
-          body: json.encode(data));
+      var response = await client
+          .post(APIurl,
+              headers: {'Content-type': 'application/json'},
+              body: json.encode(data))
+          .timeout(const Duration(seconds: 5));
+
       SharedPreferencesHelper.setstatus(true);
       return response.body;
     } on Exception catch (ex) {
       print('Server error: $ex');
       //load test dataset if request fails, not sure if it's a good idea
-      var stringJson =
-          await rootBundle.loadString('assets/ArgoFloats_testdata.json');
-      SharedPreferencesHelper.setstatus(false);
-      return stringJson;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => _oops(context),
+      );
     } finally {
       client.close();
     }
@@ -162,4 +168,15 @@ class _LoadingState extends State<Loading> {
           size: 50.0,
         )));
   }
+}
+
+Widget _oops(BuildContext context) {
+  return new AlertDialog(
+    title: Icon(Icons.message),
+    content: new Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[Text('Ooops, server error, please try later')],
+    ),
+  );
 }

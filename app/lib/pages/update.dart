@@ -82,35 +82,35 @@ class _UpdateState extends State<Update> {
     var APIurl =
         'https://dataselection.euro-argo.eu/api/find-by-search-filtred';
 
-    var StringJson = r'{"criteriaList":[{"field":"startDate","values":[{"name":"' +
-        syear +
-        r'-' +
-        smonth +
-        r'-' +
-        sday +
-        r'T00:00:00.000+0000","code":"' +
-        syear +
-        r'-' +
-        smonth +
-        r'-' +
-        sday +
-        r'T00:00:00.000+0000","n":0},{"name":"' +
-        syeara +
-        r'-' +
-        smontha +
-        r'-' +
-        sdaya +
-        r'T00:00:00.000+0000","code":"' +
-        syeara +
-        r'-' +
-        smontha +
-        r'-' +
-        sdaya +
-        r'T00:00:00.000+0000","n":0}],' +
-        r'"types":["DATE"]},{"field":"globalGeoShapeField","values":[{"code":"{\"type\":\"POLYGON\",' +
-        r'\"coordinates\":[[[-180,-90.0],[-180,90.0],[180,90.0],[180,-90.0],[-180,-90.0]]]}\"","name":"","n":0}],' +
-        r'"types":["GEOGRAPHIC"],"options":[]}],"pagination":{"page":1,"size":10000,"isPaginated":true},"bboxParams":{"latTopLeft":90.0,"lonTopLeft":-180,' +
-        r'"latBottomRight":-90.0,"lonBottomRight":180,"zoom":5},"languageEnum":"en"}';
+    var StringJson =
+        '{"criteriaList": [{"field": "startDate","values": [{"code": "' +
+            syear +
+            r'-' +
+            smonth +
+            r'-' +
+            sday +
+            r'T00:00:00.000+0000","code":"' +
+            syear +
+            r'-' +
+            smonth +
+            r'-' +
+            sday +
+            r'T00:00:00.000+0000","n":0},{"name":"' +
+            syeara +
+            r'-' +
+            smontha +
+            r'-' +
+            sdaya +
+            r'T00:00:00.000+0000","code":"' +
+            syeara +
+            r'-' +
+            smontha +
+            r'-' +
+            sdaya +
+            r'T00:00:00.000+0000","n":0}]' +
+            r'}],"pagination": {"page": 1,"size": 10000,"paginated": true},' +
+            r'"bboxParams": {"field":"coordinate","latTopLeft": 90.0,"lonTopLeft": -180.0,' +
+            r'"latBottomRight": -90.0,"lonBottomRight": 180.0}}';
 
     //print(StringJson);
     var data = jsonDecode(StringJson);

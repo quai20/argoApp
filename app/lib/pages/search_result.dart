@@ -22,7 +22,7 @@ class _SearchResultState extends State<StatefulWidget> {
     return Scaffold(
       appBar: AppBar(
           title: Text("WMO : " + wmo),
-          backgroundColor: Color(0xff005b96),
+          backgroundColor: Color(0xff325b84),
           actions: <Widget>[
             FutureBuilder<List<String>>(
                 // get the wmofleetlist, saved in the preferences
@@ -85,9 +85,16 @@ class _SearchResultState extends State<StatefulWidget> {
     var longitude;
 
     //TURNING DATA INTO MARKERS
-    for (var i = 0; i < wmoinfo.length; i += 1) {
+    //Managing 0 longitude crossing (there's also a modification in LatLng.dart)
+    for (var i = 0; i < wmoinfo.length - 1; i += 1) {
       latitude = wmoinfo[i][2];
       longitude = wmoinfo[i][3];
+      if ((wmoinfo[i + 1][3] - wmoinfo[i][3]) > 180) {
+        wmoinfo[i + 1][3] = wmoinfo[i + 1][3] - 360;
+      }
+      if ((wmoinfo[i + 1][3] - wmoinfo[i][3]) < -180) {
+        wmoinfo[i + 1][3] = wmoinfo[i + 1][3] + 360;
+      }
       //TRY CATCH IN CASE OF BAD LAT/LON
       try {
         _line.add(LatLng(latitude, longitude));
@@ -97,8 +104,8 @@ class _SearchResultState extends State<StatefulWidget> {
             builder: (ctx) => Container(
                 child: IconButton(
               icon: Icon(Icons.lens),
-              color: Colors.blue[800],
-              iconSize: 15.0,
+              color: Colors.black,
+              iconSize: 10.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
                   'data': {
@@ -119,6 +126,8 @@ class _SearchResultState extends State<StatefulWidget> {
     }
 
     //Let's rebuild the last marker in red (change color inside the for loop doesn't seems to work because of the async)
+    _line.add(
+        LatLng(wmoinfo[wmoinfo.length - 1][2], wmoinfo[wmoinfo.length - 1][3]));
     _markers.add(
       Marker(
         point: new LatLng(
@@ -127,7 +136,7 @@ class _SearchResultState extends State<StatefulWidget> {
             child: IconButton(
           icon: Icon(Icons.lens),
           color: Colors.red,
-          iconSize: 15.0,
+          iconSize: 10.0,
           onPressed: () {
             Navigator.pushNamed(context, '/wmo', arguments: {
               'data': {
@@ -146,7 +155,7 @@ class _SearchResultState extends State<StatefulWidget> {
       options: new MapOptions(
         center: new LatLng(latitude, longitude),
         zoom: 6.0,
-        maxZoom: 8.0,
+        maxZoom: 10.0,
         minZoom: 3.0,
       ),
       layers: [
@@ -158,7 +167,7 @@ class _SearchResultState extends State<StatefulWidget> {
         ),
         new PolylineLayerOptions(
           polylines: [
-            Polyline(points: _line, strokeWidth: 4.0, color: Colors.blue[800]),
+            Polyline(points: _line, strokeWidth: 2.0, color: Colors.black),
           ],
         ),
         new MarkerLayerOptions(markers: _markers),

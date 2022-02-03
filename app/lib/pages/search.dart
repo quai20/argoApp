@@ -67,7 +67,7 @@ class _SearchState extends State<Search> {
   Widget _buildBar(BuildContext context) {
     return new AppBar(
         title: _appBarTitle,
-        backgroundColor: Color(0xff005b96),
+        backgroundColor: Color(0xff325b84),
         actions: <Widget>[
           new IconButton(
             icon: _searchIcon,

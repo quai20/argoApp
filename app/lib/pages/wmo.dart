@@ -67,7 +67,7 @@ class _WmoState extends State<StatefulWidget> {
             title:
                 SelectableText("WMO : " + wmodata['platformCode'].toString()),
             actions: actionList,
-            backgroundColor: Color(0xff005b96)),
+            backgroundColor: Color(0xff325b84)),
         body: // Then we build the reste of the page with wmo info
             Center(
                 child: ListView(

@@ -22,7 +22,7 @@ class _SearchResultState extends State<StatefulWidget> {
     return Scaffold(
       appBar: AppBar(
           title: Text("WMO : " + wmo),
-          backgroundColor: Color(0xff005b96),
+          backgroundColor: Color(0xff325b84),
           actions: <Widget>[
             FutureBuilder<List<String>>(
                 // get the wmofleetlist, saved in the preferences
@@ -104,8 +104,8 @@ class _SearchResultState extends State<StatefulWidget> {
             builder: (ctx) => Container(
                 child: IconButton(
               icon: Icon(Icons.lens),
-              color: Colors.blue[800],
-              iconSize: 12.0,
+              color: Colors.black,
+              iconSize: 10.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
                   'data': {
@@ -136,7 +136,7 @@ class _SearchResultState extends State<StatefulWidget> {
             child: IconButton(
           icon: Icon(Icons.lens),
           color: Colors.red,
-          iconSize: 12.0,
+          iconSize: 10.0,
           onPressed: () {
             Navigator.pushNamed(context, '/wmo', arguments: {
               'data': {
@@ -155,7 +155,7 @@ class _SearchResultState extends State<StatefulWidget> {
       options: new MapOptions(
         center: new LatLng(latitude, longitude),
         zoom: 6.0,
-        maxZoom: 8.0,
+        maxZoom: 10.0,
         minZoom: 3.0,
       ),
       layers: [
@@ -167,7 +167,7 @@ class _SearchResultState extends State<StatefulWidget> {
         ),
         new PolylineLayerOptions(
           polylines: [
-            Polyline(points: _line, strokeWidth: 3.0, color: Colors.blue[800]),
+            Polyline(points: _line, strokeWidth: 2.0, color: Colors.black),
           ],
         ),
         new MarkerLayerOptions(markers: _markers),

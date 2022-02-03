@@ -7,7 +7,7 @@ class Argo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: _setAppBarTitle(), backgroundColor: Color(0xff005b96)),
+            title: _setAppBarTitle(), backgroundColor: Color(0xff325b84)),
         body: Center(child: _setContent()));
   }
 

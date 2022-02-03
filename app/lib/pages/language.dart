@@ -20,7 +20,7 @@ class _LanguageState extends State<StatefulWidget> {
                   Navigator.of(context).popUntil((_) => count++ >= 2);
                 }),
             title: Text("Language"),
-            backgroundColor: Color(0xff005b96)),
+            backgroundColor: Color(0xff325b84)),
         //Future builder : the future parametre will be the user language, and in the builder we will
         //draw the listview depending of language saved in the pref
         body: FutureBuilder<String>(

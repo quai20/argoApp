@@ -241,11 +241,13 @@ packages:
     source: hosted
     version: "0.6.1+1"
   latlong:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: latlong
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "14e40079ed47f2e332b1ac1aee9f92cefd982c68"
+      url: "https://github.com/quai20/dart-latlong"
+    source: git
     version: "0.6.1"
   lists:
     dependency: transitive

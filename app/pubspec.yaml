@@ -34,6 +34,11 @@ dependencies:
   scidart: ^0.0.1-dev.6  
   charts_flutter: ^0.10.0
 
+dependency_overrides:  
+  latlong : 
+    git :
+       url : https://github.com/quai20/dart-latlong
+   
 dev_dependencies:
   flutter_test:
     sdk: flutter

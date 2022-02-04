@@ -1,4 +1,4 @@
-name: Argo
+name: argo
 description: Discover Argo floats network.
 
 # The following defines the version and build number for your application.
@@ -34,7 +34,7 @@ dependencies:
   scidart: ^0.0.1-dev.6  
   charts_flutter: ^0.10.0
   share : ^0.6.5+4
-  screenshot: ^0.2.0
+  screenshot: ^1.2.3
 
 dependency_overrides:  
   latlong : 

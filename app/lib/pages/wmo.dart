@@ -1,7 +1,11 @@
+//import 'dart:html';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:Argo/pages/userpreference.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:screenshot/screenshot.dart';
@@ -13,7 +17,9 @@ class Wmo extends StatefulWidget {
 }
 
 class _WmoState extends State<StatefulWidget> {
-  final _screenshotController = ScreenshotController();
+  Uint8List _imageFile;
+  //Create an instance of ScreenshotController
+  ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   Widget build(BuildContext context) {
@@ -256,8 +262,19 @@ class _WmoState extends State<StatefulWidget> {
   }
 
   void _takeScreenshot() async {
-    final imageFile = await _screenshotController.capture();
-    Share.shareFiles([imageFile.path], text: "Shared from #ArgoFloats app");
+    await _screenshotController
+        .capture(delay: const Duration(milliseconds: 10))
+        .then((Uint8List image) async {
+      if (image != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final imagePath = await File('${directory.path}/image.png').create();
+        await imagePath.writeAsBytes(image);
+
+        /// Share Plugin
+        await Share.shareFiles([imagePath.path],
+            text: 'Shared from #ArgoFloats app !');
+      }
+    });
   }
 }
 

@@ -104,7 +104,7 @@ class _SearchResultState extends State<StatefulWidget> {
             builder: (ctx) => Container(
                 child: IconButton(
               icon: Icon(Icons.lens),
-              color: Colors.black,
+              color: Color(0xff325b84),
               iconSize: 10.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
@@ -167,7 +167,7 @@ class _SearchResultState extends State<StatefulWidget> {
         ),
         new PolylineLayerOptions(
           polylines: [
-            Polyline(points: _line, strokeWidth: 2.0, color: Colors.black),
+            Polyline(points: _line, strokeWidth: 2.0, color: Color(0xff325b84)),
           ],
         ),
         new MarkerLayerOptions(markers: _markers),

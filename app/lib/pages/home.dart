@@ -57,9 +57,9 @@ class _MapWidgetState extends State<MapWidget> {
             backgroundColor: Colors.transparent,
             body: Container(
                 child: IconButton(
-              icon: Icon(Icons.trip_origin),
-              color: Colors.black,
-              iconSize: 10.0,
+              icon: Icon(Icons.lens),
+              color: Color(0xff325b84),
+              iconSize: 7.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
                   'data': jsonData[i],
@@ -114,7 +114,7 @@ class _MapWidgetState extends State<MapWidget> {
                   }, currentTime: displaydate);
                 }),
           ]),
-      backgroundColor: Colors.blue[800],
+      backgroundColor: Color(0xff325b84),
       //ADD MAP
       body: FlutterMap(
         mapController: mapController,

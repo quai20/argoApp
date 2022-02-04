@@ -4,6 +4,8 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:screenshot/screenshot.dart';
+import 'package:share/share.dart';
 
 class Wmo extends StatefulWidget {
   @override
@@ -11,6 +13,8 @@ class Wmo extends StatefulWidget {
 }
 
 class _WmoState extends State<StatefulWidget> {
+  final _screenshotController = ScreenshotController();
+
   @override
   Widget build(BuildContext context) {
     //Get wmo clicked from page context
@@ -43,6 +47,7 @@ class _WmoState extends State<StatefulWidget> {
                       snapshot.data, wmodata['platformCode'].toString())
                   : Container();
             }),
+        IconButton(icon: Icon(Icons.share), onPressed: _takeScreenshot)
       ];
     } else {
       actionList = <Widget>[
@@ -58,6 +63,7 @@ class _WmoState extends State<StatefulWidget> {
                       snapshot.data, wmodata['platformCode'].toString())
                   : Container();
             }),
+        IconButton(icon: Icon(Icons.share), onPressed: _takeScreenshot)
       ];
     }
 
@@ -70,65 +76,69 @@ class _WmoState extends State<StatefulWidget> {
             backgroundColor: Color(0xff325b84)),
         body: // Then we build the reste of the page with wmo info
             Center(
-                child: ListView(
-          padding: const EdgeInsets.all(8),
-          children: <Widget>[
-            Container(
-                height: 170,
-                child: FutureBuilder<List>(
-                    // retrieve data
-                    future: _retrievemetadata(
-                        wmodata['platformCode'].toString(),
-                        wmodata['cvNumber'].toString()),
-                    initialData: ["", "", "", 0, 0, 0, ""],
-                    builder:
-                        (BuildContext context, AsyncSnapshot<List> snapshot) {
-                      //Here we call the build function
-                      return snapshot.hasData
-                          ? _buildMeta(snapshot.data)
-                          : Container();
-                    })),
-            Container(
-                height: 15,
-                child: Center(
-                    child: Text('Temperature [°C]',
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold)))),
-            // and the charts
-            Container(
-                //padding: const EdgeInsets.all(8),
-                margin: const EdgeInsets.only(left: 15.0, right: 15.0),
-                height: (MediaQuery.of(context).size.height) - 300,
-                child: new RotatedBox(
-                    quarterTurns: 1,
-                    child: FutureBuilder<List<List<double>>>(
-                        // retrieve data
-                        future: _retrievedata(
-                            wmodata['platformCode'].toString(),
-                            wmodata['cvNumber'].toString()),
-                        initialData: [
-                          [0.0, 0.0, 0.0],
-                          [0.0, 0.0, 0.0]
-                        ],
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<List<double>>> snapshot) {
-                          //Here we call the build function
-                          return snapshot.hasData
-                              ? _buildChart(snapshot.data)
-                              : Container();
-                        }))),
-            Container(
-                height: 15,
-                child: Center(
-                    child: Text('Salinity [psu]',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold))))
-          ],
-        )));
+                child: Screenshot(
+                    controller: _screenshotController,
+                    child: ListView(
+                      padding: const EdgeInsets.all(8),
+                      children: <Widget>[
+                        Container(
+                            height: 170,
+                            child: FutureBuilder<List>(
+                                // retrieve data
+                                future: _retrievemetadata(
+                                    wmodata['platformCode'].toString(),
+                                    wmodata['cvNumber'].toString()),
+                                initialData: ["", "", "", 0, 0, 0, ""],
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<List> snapshot) {
+                                  //Here we call the build function
+                                  return snapshot.hasData
+                                      ? _buildMeta(snapshot.data)
+                                      : Container();
+                                })),
+                        Container(
+                            height: 15,
+                            child: Center(
+                                child: Text('Temperature [°C]',
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold)))),
+                        // and the charts
+                        Container(
+                            //padding: const EdgeInsets.all(8),
+                            margin:
+                                const EdgeInsets.only(left: 15.0, right: 15.0),
+                            height: (MediaQuery.of(context).size.height) - 300,
+                            child: new RotatedBox(
+                                quarterTurns: 1,
+                                child: FutureBuilder<List<List<double>>>(
+                                    // retrieve data
+                                    future: _retrievedata(
+                                        wmodata['platformCode'].toString(),
+                                        wmodata['cvNumber'].toString()),
+                                    initialData: [
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0]
+                                    ],
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<List<List<double>>>
+                                            snapshot) {
+                                      //Here we call the build function
+                                      return snapshot.hasData
+                                          ? _buildChart(snapshot.data)
+                                          : Container();
+                                    }))),
+                        Container(
+                            height: 15,
+                            child: Center(
+                                child: Text('Salinity [psu]',
+                                    style: TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold))))
+                      ],
+                    ))));
   }
 
   Widget _buildMeta(metalist) {
@@ -243,6 +253,11 @@ class _WmoState extends State<StatefulWidget> {
             setState(() {});
           });
     }
+  }
+
+  void _takeScreenshot() async {
+    final imageFile = await _screenshotController.capture();
+    Share.shareFiles([imageFile.path], text: "Shared from #ArgoFloats app");
   }
 }
 

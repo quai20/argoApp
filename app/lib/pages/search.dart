@@ -60,7 +60,7 @@ class _SearchState extends State<Search> {
       body: Container(
         child: _buildList(),
       ),
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
     );
   }
 

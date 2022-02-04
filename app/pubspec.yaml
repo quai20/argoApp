@@ -22,7 +22,9 @@ dependencies:
   flutter_map: any # or the latest version on Pub   
   http: ^0.12.1
   flutter_spinkit: ^4.1.2  
-  flutter_datetime_picker: ^1.3.8  
+  flutter_datetime_picker: 
+    git:
+      url: https://github.com/espresso3389/flutter_datetime_picker
   cupertino_icons: ^0.1.2
   url_launcher: ^5.1.6
   flutter_launcher_icons: "^0.7.3"
@@ -31,13 +33,20 @@ dependencies:
   shared_preferences: ^0.5.7+1  
   dio: ^1.0.0
   fcharts: any
-  scidart: ^0.0.1-dev.6  
-  charts_flutter: ^0.10.0
+  scidart: ^0.0.1-dev.6    
 
 dependency_overrides:  
+  logging : ^1.0.2
+  console_log_handler : any
   latlong : 
     git :
        url : https://github.com/quai20/dart-latlong
+  charts_flutter:
+    git:
+      url: https://github.com/google/charts
+      path: charts_flutter
+      ref: 30477090290b348ed3101bc13017aae465f59017
+       
    
 dev_dependencies:
   flutter_test:

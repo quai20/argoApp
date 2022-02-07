@@ -11,7 +11,9 @@ import 'package:Argo/pages/search_result.dart';
 import 'package:Argo/pages/language.dart';
 
 void main() => runApp(MaterialApp(
-        theme: ThemeData(backgroundColor: Colors.white),
+        theme: ThemeData(
+            backgroundColor: Colors.white,
+            scaffoldBackgroundColor: Colors.white),
         initialRoute: '/',
         routes: {
           '/': (context) => Loading(

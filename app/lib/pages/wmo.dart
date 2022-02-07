@@ -17,7 +17,6 @@ class Wmo extends StatefulWidget {
 }
 
 class _WmoState extends State<StatefulWidget> {
-  Uint8List _imageFile;
   //Create an instance of ScreenshotController
   ScreenshotController _screenshotController = ScreenshotController();
 
@@ -269,6 +268,7 @@ class _WmoState extends State<StatefulWidget> {
         final directory = await getApplicationDocumentsDirectory();
         final imagePath = await File('${directory.path}/image.png').create();
         await imagePath.writeAsBytes(image);
+        //print(imagePath.path);
 
         /// Share Plugin
         await Share.shareFiles([imagePath.path],

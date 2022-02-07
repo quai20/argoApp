@@ -83,67 +83,70 @@ class _WmoState extends State<StatefulWidget> {
             Center(
                 child: Screenshot(
                     controller: _screenshotController,
-                    child: ListView(
-                      padding: const EdgeInsets.all(8),
-                      children: <Widget>[
-                        Container(
-                            height: 170,
-                            child: FutureBuilder<List>(
-                                // retrieve data
-                                future: _retrievemetadata(
-                                    wmodata['platformCode'].toString(),
-                                    wmodata['cvNumber'].toString()),
-                                initialData: ["", "", "", 0, 0, 0, ""],
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<List> snapshot) {
-                                  //Here we call the build function
-                                  return snapshot.hasData
-                                      ? _buildMeta(snapshot.data)
-                                      : Container();
-                                })),
-                        Container(
-                            height: 15,
-                            child: Center(
-                                child: Text('Temperature [°C]',
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold)))),
-                        // and the charts
-                        Container(
-                            //padding: const EdgeInsets.all(8),
-                            margin:
-                                const EdgeInsets.only(left: 15.0, right: 15.0),
-                            height: (MediaQuery.of(context).size.height) - 300,
-                            child: new RotatedBox(
-                                quarterTurns: 1,
-                                child: FutureBuilder<List<List<double>>>(
+                    child: Container(
+                        color: Colors.white,
+                        child: ListView(
+                          padding: const EdgeInsets.all(8),
+                          children: <Widget>[
+                            Container(
+                                height: 170,
+                                child: FutureBuilder<List>(
                                     // retrieve data
-                                    future: _retrievedata(
+                                    future: _retrievemetadata(
                                         wmodata['platformCode'].toString(),
                                         wmodata['cvNumber'].toString()),
-                                    initialData: [
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0]
-                                    ],
+                                    initialData: ["", "", "", 0, 0, 0, ""],
                                     builder: (BuildContext context,
-                                        AsyncSnapshot<List<List<double>>>
-                                            snapshot) {
+                                        AsyncSnapshot<List> snapshot) {
                                       //Here we call the build function
                                       return snapshot.hasData
-                                          ? _buildChart(snapshot.data)
+                                          ? _buildMeta(snapshot.data)
                                           : Container();
-                                    }))),
-                        Container(
-                            height: 15,
-                            child: Center(
-                                child: Text('Salinity [psu]',
-                                    style: TextStyle(
-                                        color: Colors.blue,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold))))
-                      ],
-                    ))));
+                                    })),
+                            Container(
+                                height: 15,
+                                child: Center(
+                                    child: Text('Temperature [°C]',
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold)))),
+                            // and the charts
+                            Container(
+                                //padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.only(
+                                    left: 15.0, right: 15.0),
+                                height:
+                                    (MediaQuery.of(context).size.height) - 300,
+                                child: new RotatedBox(
+                                    quarterTurns: 1,
+                                    child: FutureBuilder<List<List<double>>>(
+                                        // retrieve data
+                                        future: _retrievedata(
+                                            wmodata['platformCode'].toString(),
+                                            wmodata['cvNumber'].toString()),
+                                        initialData: [
+                                          [0.0, 0.0, 0.0],
+                                          [0.0, 0.0, 0.0]
+                                        ],
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<List<List<double>>>
+                                                snapshot) {
+                                          //Here we call the build function
+                                          return snapshot.hasData
+                                              ? _buildChart(snapshot.data)
+                                              : Container();
+                                        }))),
+                            Container(
+                                height: 15,
+                                child: Center(
+                                    child: Text('Salinity [psu]',
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold))))
+                          ],
+                        )))));
   }
 
   Widget _buildMeta(metalist) {

@@ -19,17 +19,51 @@ class _LanguageState extends State<StatefulWidget> {
                   int count = 0;
                   Navigator.of(context).popUntil((_) => count++ >= 2);
                 }),
-            title: Text("Language"),
+            title: Text("Settings"),
             backgroundColor: Color(0xff325b84)),
         //Future builder : the future parametre will be the user language, and in the builder we will
         //draw the listview depending of language saved in the pref
-        body: FutureBuilder<String>(
-            // get the language, saved in the user preferences
-            future: SharedPreferencesHelper.getlanguage(),
-            initialData: 'english',
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              return snapshot.hasData ? _buildList(snapshot.data) : Container();
-            }));
+        body: ListView(padding: const EdgeInsets.all(8), children: <Widget>[
+          Container(
+            height: 30,
+            color: Colors.white,
+            child: Text('Language', style: TextStyle(fontSize: 20)),
+          ),
+          Container(
+            height: 200,
+            color: Colors.white,
+            child: FutureBuilder<String>(
+                // get the language, saved in the user preferences
+                future: SharedPreferencesHelper.getlanguage(),
+                initialData: 'english',
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  return snapshot.hasData
+                      ? _buildList(snapshot.data)
+                      : Container();
+                }),
+          ),
+          Container(
+            height: 30,
+            color: Colors.white,
+            child: Text('Map provider', style: TextStyle(fontSize: 20)),
+          ),
+          Container(
+            height: 200,
+            color: Colors.white,
+            child: FutureBuilder<String>(
+                // get the language, saved in the user preferences
+                future: SharedPreferencesHelper.getMapProvider(),
+                initialData:
+                    'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  return snapshot.hasData
+                      ? _buildProviderList(snapshot.data)
+                      : Container();
+                }),
+          )
+        ]));
   }
 
   //This is the built of the the listview itself, with fleetlist as input
@@ -92,6 +126,68 @@ class _LanguageState extends State<StatefulWidget> {
                 onPressed: () {
                   //set language & rebuild
                   SharedPreferencesHelper.setlanguage('spanish');
+                  setState(() {});
+                }))
+      ],
+    );
+  }
+
+  Widget _buildProviderList(String mapprovider) {
+    var icon_mp1 = Icons.radio_button_unchecked;
+    var icon_mp2 = Icons.radio_button_unchecked;
+    var icon_mp3 = Icons.radio_button_unchecked;
+
+    switch (mapprovider) {
+      case 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}':
+        {
+          icon_mp1 = Icons.radio_button_checked;
+        }
+        break;
+
+      case 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}':
+        {
+          icon_mp2 = Icons.radio_button_checked;
+        }
+        break;
+
+      case 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}':
+        {
+          icon_mp3 = Icons.radio_button_checked;
+        }
+        break;
+    }
+
+    return new ListView(
+      padding: const EdgeInsets.all(8),
+      children: <Widget>[
+        ListTile(
+            title: Text('Esri WorldGrayCanvas'),
+            trailing: IconButton(
+                icon: Icon(icon_mp1),
+                onPressed: () {
+                  //set provider & rebuild
+                  SharedPreferencesHelper.setMapProvider(
+                      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}');
+                  setState(() {});
+                })),
+        ListTile(
+            title: Text('Esri WorldPhysical'),
+            trailing: IconButton(
+                icon: Icon(icon_mp2),
+                onPressed: () {
+                  //set language & rebuild
+                  SharedPreferencesHelper.setMapProvider(
+                      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}');
+                  setState(() {});
+                })),
+        ListTile(
+            title: Text('Esri OceanBasemap'),
+            trailing: IconButton(
+                icon: Icon(icon_mp3),
+                onPressed: () {
+                  //set language & rebuild
+                  SharedPreferencesHelper.setMapProvider(
+                      'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}');
                   setState(() {});
                 }))
       ],

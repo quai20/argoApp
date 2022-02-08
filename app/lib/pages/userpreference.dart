@@ -6,17 +6,35 @@ class SharedPreferencesHelper {
   // Instantiation of the SharedPreferences library
   static final String _kstatus = "isconnected";
 
-  // Method that returns the saved language
+  // Method that returns the net status
   static Future<bool> getstatus() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     //default true
     return prefs.getBool(_kstatus) ?? true;
   }
 
-  // Method that saves the user language
+  // Method that saves the net status
   static Future<bool> setstatus(bool value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setBool(_kstatus, value);
+  }
+
+// MAP PROVIDER
+  // Instantiation of the SharedPreferences library
+  static final String _kprovider = "mapprovider";
+
+  // Method that returns the saved map provider
+  static Future<String> getMapProvider() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //default
+    return prefs.getString(_kprovider) ??
+        "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}";
+  }
+
+  // Method that saves the map provider
+  static Future<bool> setMapProvider(String value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString(_kprovider, value);
   }
 
   // LANGUAGE

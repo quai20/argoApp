@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Argo/pages/userpreference.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -150,29 +150,45 @@ class _SearchResultState extends State<StatefulWidget> {
         anchorPos: AnchorPos.align(AnchorAlign.center),
       ),
     );
+    // the map widget has to go in a function because of the map provider (which is a future)
+    return _setThisMapContent(latitude, longitude, _line, _markers);
+  }
 
-    return FlutterMap(
-      options: new MapOptions(
-        center: new LatLng(latitude, longitude),
-        zoom: 6.0,
-        maxZoom: 10.0,
-        minZoom: 3.0,
-      ),
-      layers: [
-        new TileLayerOptions(
-          //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          urlTemplate:
-              "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-          subdomains: ['a', 'b', 'c'],
-        ),
-        new PolylineLayerOptions(
-          polylines: [
-            Polyline(points: _line, strokeWidth: 2.0, color: Color(0xff325b84)),
-          ],
-        ),
-        new MarkerLayerOptions(markers: _markers),
-      ],
-    );
+  _setThisMapContent(latitude, longitude, _line, _markers) {
+    return FutureBuilder<String>(
+        // get map provider, saved in the user preferences
+        future: SharedPreferencesHelper.getMapProvider(),
+        initialData: ' ',
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.hasData) {
+            return FlutterMap(
+              options: new MapOptions(
+                center: new LatLng(latitude, longitude),
+                zoom: 6.0,
+                interactiveFlags:
+                    InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                maxZoom: 10.0,
+                minZoom: 3.0,
+              ),
+              layers: [
+                new TileLayerOptions(
+                  //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  urlTemplate: snapshot.data,
+                  subdomains: ['a', 'b', 'c'],
+                ),
+                new PolylineLayerOptions(
+                  polylines: [
+                    Polyline(
+                        points: _line,
+                        strokeWidth: 2.0,
+                        color: Color(0xff325b84)),
+                  ],
+                ),
+                new MarkerLayerOptions(markers: _markers),
+              ],
+            );
+          }
+        });
   }
 
   //Future function that call erddap and fetch wmo information, wmo is returned in a futur builder
@@ -197,22 +213,5 @@ class _SearchResultState extends State<StatefulWidget> {
           json.decode('{"table": {"rows": [["0000000", 0, 0.0, 0.0]]}}');
       return jsonData['table']['rows'];
     }
-  }
-}
-
-class SharedPreferencesHelper {
-  // Instantiation of the SharedPreferences library
-  static final String _kwmofleet = "wmofleet";
-
-  // Method that returns the saved wmos, or empty list if none
-  static Future<List<String>> getwmofleet() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(_kwmofleet) ?? List<String>();
-  }
-
-  // Method that saves the fleet
-  static Future<bool> setwmofleet(List<String> value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setStringList(_kwmofleet, value);
   }
 }

@@ -309,13 +309,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  mime:
-    dependency: transitive
-    description:
-      name: mime
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.7"
   octo_image:
     dependency: transitive
     description:
@@ -435,20 +428,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.2-dev.9"
-  screenshot:
-    dependency: "direct main"
-    description:
-      name: screenshot
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.3"
-  share:
-    dependency: "direct main"
-    description:
-      name: share
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.5+4"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -656,7 +635,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.11"
+    version: "2.3.10"
   wkt_parser:
     dependency: transitive
     description:

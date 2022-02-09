@@ -57,9 +57,9 @@ class _MapWidgetState extends State<MapWidget> {
             backgroundColor: Colors.transparent,
             body: Container(
                 child: IconButton(
-              icon: Icon(Icons.trip_origin),
-              color: Colors.black,
-              iconSize: 10.0,
+              icon: Icon(Icons.lens),
+              color: Color(0xff325b84),
+              iconSize: 7.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/wmo', arguments: {
                   'data': jsonData[i],
@@ -114,26 +114,9 @@ class _MapWidgetState extends State<MapWidget> {
                   }, currentTime: displaydate);
                 }),
           ]),
-      backgroundColor: Colors.blue[800],
+      backgroundColor: Color(0xff325b84),
       //ADD MAP
-      body: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          center: center,
-          zoom: zoom,
-          maxZoom: maxZoom,
-          minZoom: minZoom,
-        ),
-        layers: [
-          TileLayerOptions(
-            //urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            urlTemplate:
-                "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-            subdomains: ['a', 'b', 'c'],
-          ),
-          MarkerLayerOptions(markers: _markers),
-        ],
-      ),
+      body: _setMapContent(center, zoom, minZoom, maxZoom),
       //DRAWER FOR THE MENU OF THE APP
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -142,6 +125,35 @@ class _MapWidgetState extends State<MapWidget> {
         child: _setDrawer(),
       ),
     );
+  }
+
+  _setMapContent(center, zoom, minZoom, maxZoom) {
+    return FutureBuilder<String>(
+        // get map provider, saved in the user preferences
+        future: SharedPreferencesHelper.getMapProvider(),
+        initialData: ' ',
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.hasData) {
+            return FlutterMap(
+              mapController: mapController,
+              options: MapOptions(
+                center: center,
+                zoom: zoom,
+                interactiveFlags:
+                    InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                maxZoom: maxZoom,
+                minZoom: minZoom,
+              ),
+              layers: [
+                TileLayerOptions(
+                  urlTemplate: snapshot.data,
+                  subdomains: ['a', 'b', 'c'],
+                ),
+                MarkerLayerOptions(markers: _markers),
+              ],
+            );
+          }
+        });
   }
 
   Future<String> definetitle() async {
@@ -182,31 +194,6 @@ class _MapWidgetState extends State<MapWidget> {
           }
         });
   }
-
-  // Future<LocaleType> _getLocale() async {
-  //   var language = await SharedPreferencesHelper.getlanguage();
-  //   switch (language) {
-  //     case 'english':
-  //       {
-  //         return LocaleType.en;
-  //       }
-  //       break;
-  //     case 'francais':
-  //       {
-  //         return LocaleType.fr;
-  //       }
-  //       break;
-  //     case 'spanish':
-  //       {
-  //         return LocaleType.es;
-  //       }
-  //       break;
-  //     default:
-  //       {
-  //         return LocaleType.en;
-  //       }
-  //   }
-  // }
 
   Future<String> definehelptext() async {
     var language = await SharedPreferencesHelper.getlanguage();
@@ -254,12 +241,11 @@ class _MapWidgetState extends State<MapWidget> {
         children: <Widget>[_gethelptext()],
       ),
       actions: <Widget>[
-        new FlatButton(
+        new TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text('OK'),
+          child: const Text('OK', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
@@ -281,7 +267,7 @@ class _MapWidgetState extends State<MapWidget> {
                     'My Fleet',
                     'About Argo',
                     'About this app',
-                    'Language'
+                    'Settings'
                   ];
                 }
                 break;
@@ -292,7 +278,7 @@ class _MapWidgetState extends State<MapWidget> {
                     'Ma flotte',
                     'A propos d\'Argo',
                     'A propos de cette application',
-                    'Langue'
+                    'Réglages'
                   ];
                 }
                 break;
@@ -303,7 +289,7 @@ class _MapWidgetState extends State<MapWidget> {
                     'Mi flota',
                     'Sobre Argo',
                     'Sobre esta aplicación',
-                    'Idioma'
+                    'Ajustes'
                   ];
                 }
                 break;

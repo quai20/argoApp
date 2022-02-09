@@ -46,7 +46,7 @@ class _LanguageState extends State<StatefulWidget> {
           Container(
             height: 30,
             color: Colors.white,
-            child: Text('Map provider', style: TextStyle(fontSize: 20)),
+            child: Text('Basemap', style: TextStyle(fontSize: 20)),
           ),
           Container(
             height: 200,

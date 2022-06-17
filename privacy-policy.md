@@ -1,7 +1,7 @@
 Privacy Policy for Argo Floats
 ==============================
 
-At Argo Floats, accessible from https://github.com/quai20/argoApp, one of the main priorities is the privacy of users. This Privacy Policy document contains types of information that is collected and recorded by Argo Floats and how it may be used.
+At Argo Floats, accessible from https://play.google.com/store/apps/details?id=com.kb.android.argo and https://github.com/quai20/argoApp, one of the main priorities is the privacy of users. This Privacy Policy document contains types of information that is collected and recorded by Argo Floats and how it may be used.
 
 If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact developpers.
 

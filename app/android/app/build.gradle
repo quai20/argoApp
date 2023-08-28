@@ -46,9 +46,9 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.kb.android.argo"
         minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 7
-        versionName "1.2.0"
+        targetSdkVersion 33
+        versionCode 8
+        versionName "1.2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }    
 

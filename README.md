@@ -5,7 +5,7 @@
      
 ## Argo network exploration smartphone application
 
-This is the main code for the android application for Argo network discovery. Available for dowload here : 
+This is the main code for the android application for Argo network discovery. Available for dowload here : https://quai20.github.io/argoApp/
 
 ### Features :
 

@@ -5,7 +5,7 @@
      
 ## Argo network exploration smartphone application
 
-This is the main code for the android application for Argo network discovery. Available on the app store here : https://play.google.com/store/apps/details?id=com.kb.android.argo
+This is the main code for the android application for Argo network discovery. Available for dowload here : 
 
 ### Features :
 
